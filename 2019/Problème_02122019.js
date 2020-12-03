@@ -4,36 +4,63 @@ const input = [
     135,1,13,135,139,1,9,139,143,1,9,143,147,1,147,13,151,1,151,9,155,1,155,13,159,1,6,159,163,1,13,163,167,1,2,167,171,1,171,13,0,99,2,0,14,0
 ]
 
+const END_CODE = 99
+const LENGTH = input.length
+
+const getInput = (enterInput, pos1Number, pos2Number) => {
+    const currentInput = [...input]
+
+    currentInput[1] = pos1Number
+    currentInput[2] = pos2Number
+    
+    let i = 0
+
+    while (currentInput[i] !== END_CODE && i < LENGTH - 4) {
+        const operation_code = currentInput[i]
+        const first_number_index = currentInput[i+1]
+        const second_number_index = currentInput[i+2]
+        const result_index = currentInput[i+3]
+
+        if (!(operation_code === 1 || operation_code === 2)) {
+            console.error(`BAD OPERATION CODE${error}`)
+        } else if  (first_number_index >= LENGTH || second_number_index >= LENGTH || result_index >= LENGTH) {
+            console.error('BAD INDEX')
+        } else {
+            if (operation_code === 1) {
+                currentInput[result_index] = currentInput[first_number_index] + currentInput[second_number_index]
+            } else {
+                currentInput[result_index] = currentInput[first_number_index] * currentInput[second_number_index]
+            }
+        }
+        i += 4
+    }
+
+    return currentInput
+}
 // 1
 
-const LENGTH = input.length
-input[1] = 12
-input[2] = 2
-
-const END_CODE = 99
-
-let i = 0
-
-while (input[i] !== END_CODE && i < LENGTH - 4) {
-    const operation_code = input[i]
-    const first_number_index = input[i+1]
-    const second_number_index = input[i+2]
-    const result_index = input[i+3]
-
-    if (!(operation_code === 1 || operation_code === 2)) {
-        console.error(`BAD OPERATION CODE${error}`)
-    } else if  (first_number_index >= LENGTH || second_number_index >= LENGTH || result_index >= LENGTH) {
-        console.error('BAD INDEX')
-    } else {
-        if (operation_code === 1) {
-            input[result_index] = input[first_number_index] + input[second_number_index]
-        } else {
-            input[result_index] = input[first_number_index] * input[second_number_index]
-        }
-    }
-    i += 4
-}
+const currentInput = getInput(input,12,2)
 console.log('First Result')
-console.log(input.join(' '))
+console.log(currentInput.join(' '))
 
 // 2
+
+const RES_TO_FIND = 19690720
+
+let i = 0
+let j = 0
+let currentInput1 = []
+let finish = false
+
+while (!finish && i < 100) {
+    currentInput1 = getInput(input,i,j)
+    if (currentInput1[0] === RES_TO_FIND) {
+        finish = true
+    } else {
+        i += Math.floor(j/99)
+        j = (j+1) % 100
+    }
+}
+console.log('\n')
+console.log('Second Result')
+console.log(`${i} ; ${j} ; ${100*i + j} ; ${currentInput1.join(' ')}`)
