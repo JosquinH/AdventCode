@@ -1145,6 +1145,10 @@ cid:331
 ecl:blu eyr:2021 hcl:#733820 hgt:174cm
 iyr:2010 byr:1950 pid:405416908`
 
+const regBYR = /[0-9]{4}/
+const regIYR = /[0-9]{4}/
+const regEYR = /[0-9]{4}/
+
 const VALID_KEY = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
 const OPTIONAL_KEY = ['cid']
 
@@ -1205,3 +1209,28 @@ console.log(validPasseportList)
 console.log(`Nombre de passeport valide : ${validPasseportList.length}`)
 
 // 2
+
+let numberOfValidPasseport2 = 0
+
+const validPasseportList2 = validPasseportList
+
+for (const passeport of finalInput) {
+    
+    let isValid = true
+
+    //BYR
+
+    const currentByr = regBYR.test(passeport.byr) ? parseInt(passeport.byr) : 0
+    isValid = isValid && currentByr >= 1920 && currentByr <= 2002
+    
+    // IYR
+
+    const currentIyr = regIYR.test(passeport.iyr) ? parseInt(passeport.iyr) : 0
+    isValid = isValid && currentIyr >= 2010 && currentIyr <= 2020
+
+    // EYR
+
+    const currentEyr = regIYR.test(passeport.eyr) ? parseInt(passeport.eyr) : 0
+    isValid = isValid && currentEyr >= 2020 && currentEyr <= 2030
+
+}
