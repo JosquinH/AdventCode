@@ -1152,10 +1152,10 @@ const regEYR = /[0-9]{4}/
 const regNumber = /[0-9]/
 const regChar = /[a-z]/
 
-const regPID = /0[0-9]{8}/
+const regPID = /[0-9]{9}/
 const ECL_LIST = ['amb','blu','brn','gry','grn','hzl','oth']
 
-const regHexa = /#([a-f]|[0-9]){6}/
+const regHexa = /#([a-f]|[0-9]|[A-F]){6}/
 const VALID_KEY = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
 const OPTIONAL_KEY = ['cid']
 
@@ -1222,7 +1222,6 @@ let numberOfValidPasseport2 = 0
 const validPasseportList2 = []
 
 for (const passeport of finalInput) {
-    
     let isValid = true
 
     //BYR
@@ -1237,7 +1236,7 @@ for (const passeport of finalInput) {
 
     // EYR
 
-    const currentEyr = regIYR.test(passeport.eyr) ? parseInt(passeport.eyr) : 0
+    const currentEyr = regEYR.test(passeport.eyr) ? parseInt(passeport.eyr) : 0
     isValid = isValid && currentEyr >= 2020 && currentEyr <= 2030
 
     // HGT
@@ -1261,7 +1260,7 @@ for (const passeport of finalInput) {
 
     // HCL
 
-    isValid = isValid && regHexa.test(passeport.hcl)
+    isValid = isValid && regHexa.test(passeport.hcl) && passeport.hcl.length === 7
 
     // ECL
 
@@ -1269,7 +1268,7 @@ for (const passeport of finalInput) {
 
     // PID
 
-    isValid = isValid && regPID.test(passeport.pid)
+    isValid = isValid && regPID.test(passeport.pid) && passeport.pid.length === 9
 
     if (isValid) validPasseportList2.push(passeport)
 }
