@@ -1145,7 +1145,8 @@ cid:331
 ecl:blu eyr:2021 hcl:#733820 hgt:174cm
 iyr:2010 byr:1950 pid:405416908`
 
-const VALID_KEY = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid', 'cid']
+const VALID_KEY = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
+const OPTIONAL_KEY = ['cid']
 
 const NB_KEY = VALID_KEY.length
 
@@ -1183,5 +1184,24 @@ for (const passeport of passeportList) {
 
 // 1
 
+let numberOfValidPasseport = 0
 
+const validPasseportList = []
 
+for (const passeport of finalInput) {
+    const fieldList = Object.keys(passeport)
+    const nbValid = fieldList.reduce((acc,x) => {
+        if(VALID_KEY.findIndex(y => y === x) !== -1) {
+            return acc + 1
+        }
+        return acc
+    },0)
+    if (nbValid === NB_KEY) {
+        validPasseportList.push(passeport) 
+    }
+}
+
+console.log(validPasseportList)
+console.log(`Nombre de passeport valide : ${validPasseportList.length}`)
+
+// 2
