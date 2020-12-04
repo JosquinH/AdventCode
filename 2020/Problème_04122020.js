@@ -1149,6 +1149,13 @@ const regBYR = /[0-9]{4}/
 const regIYR = /[0-9]{4}/
 const regEYR = /[0-9]{4}/
 
+const regNumber = /[0-9]/
+const regChar = /[a-z]/
+
+const regPID = /0[0-9]{8}/
+const ECL_LIST = ['amb','blu','brn','gry','grn','hzl','oth']
+
+const regHexa = /#([a-f]|[0-9]){6}/
 const VALID_KEY = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']
 const OPTIONAL_KEY = ['cid']
 
@@ -1212,7 +1219,7 @@ console.log(`Nombre de passeport valide : ${validPasseportList.length}`)
 
 let numberOfValidPasseport2 = 0
 
-const validPasseportList2 = validPasseportList
+const validPasseportList2 = []
 
 for (const passeport of finalInput) {
     
@@ -1233,4 +1240,39 @@ for (const passeport of finalInput) {
     const currentEyr = regIYR.test(passeport.eyr) ? parseInt(passeport.eyr) : 0
     isValid = isValid && currentEyr >= 2020 && currentEyr <= 2030
 
+    // HGT
+
+    const [val, unit] = passeport.hgt === undefined ? [0, ''] : passeport.hgt.split('').reduce((acc,x) => {
+        if (regChar.test(x)) {
+            acc[1] = `${acc[1]}${x}`
+        } else if(regNumber.test(x)) {
+            acc[0] = (acc[0] * 10) + parseInt(x) 
+        }
+        return acc
+    },[0,''])
+
+    if (!(unit === 'cm' || unit === 'in' )) {
+        isValid = false
+    } else if (unit === 'cm') {
+        isValid = isValid && val >= 150 && val <= 193
+    } else {
+        isValid = isValid && val >= 59 && val <= 76
+    }
+
+    // HCL
+
+    isValid = isValid && regHexa.test(passeport.hcl)
+
+    // ECL
+
+    isValid = isValid && ECL_LIST.findIndex(x => x === passeport.ecl) !== -1
+
+    // PID
+
+    isValid = isValid && regPID.test(passeport.pid)
+
+    if (isValid) validPasseportList2.push(passeport)
 }
+
+console.log(validPasseportList2)
+console.log(`Nombre de passeport valide : ${validPasseportList2.length}`)
