@@ -890,7 +890,7 @@ const input = [
 ]
 
 /**
- *  L'astuce est de voire ça en binaire.
+ *  L'astuce est de voir ça en binaire.
  *  Les B et R deviennent des 1
  *  Les F et L des 0
  *  Le numéro obtenue donne l'id
@@ -904,6 +904,7 @@ const input = [
  let max_placement = ''
 
  for (const placement of input) {
+
      const currId = placement.split('').reduce((acc, x) => {
         if (x === 'F' || x === 'L') {
             acc = acc * 2
@@ -913,11 +914,12 @@ const input = [
         return acc
     }, 0)
 
-     allIdsList.push(currId)
-     if (currId > max_id) {
+    allIdsList.push(currId)
+
+    if (currId > max_id) {
         max_id = currId
         max_placement = placement
-     }
+    }
  }
 
  console.log(`Le placement ayant le plus gros id est ${max_placement} et a pour id ${max_id}`)
