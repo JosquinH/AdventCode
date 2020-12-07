@@ -612,4 +612,54 @@ for (const colorString of input) {
     color_raw_obj[key.trim()] = contain
 }
 
-console.dir(color_raw_obj, {depth: null})
+const [index_to_color, color_to_index] = Object.keys(color_raw_obj).reduce((acc,color,index) => {
+    acc[0].push(color)
+    acc[1][color] = index
+    return acc
+},[[],{}])
+
+
+// 1
+
+const INDEX_SHINY_GOLD = index_to_color.findIndex(x => x === 'shiny gold')
+
+const bag_to_shiny = []
+const tableToTreat = [INDEX_SHINY_GOLD]
+
+while (tableToTreat.length > 0) {
+    const curr_index = tableToTreat.shift()
+    const curr_color =  index_to_color[curr_index]
+
+    const listColorFrom = Object.keys(color_raw_obj).reduce((acc,x) => {
+        if (color_raw_obj[x][curr_color] !== undefined) {
+            acc.push(x)
+        }
+        return acc
+    }, [])
+
+    for (const color_from of listColorFrom) {
+        const color_from_index = color_to_index[color_from]
+        if (bag_to_shiny.findIndex(x => x === color_from_index) === -1) {
+            bag_to_shiny.push(color_from_index)
+            tableToTreat.push(color_from_index)
+        }
+    }
+}
+
+console.log(bag_to_shiny.map(x => index_to_color[x]))
+console.log(`Résultat : ${bag_to_shiny.length}`)
+
+// 2
+
+const getNumberOfBag = (color) => {
+    let totalBag = 0
+    const color_obj = color_raw_obj[color]
+
+    for (const curr_color of Object.keys(color_obj)) {
+        totalBag = totalBag + (color_obj[curr_color] * getNumberOfBag(curr_color))  + color_obj[curr_color]
+    }
+    return totalBag
+}
+const result = getNumberOfBag('shiny gold')
+
+console.log(`Un shiny gold bag contient ${result} bags`)
