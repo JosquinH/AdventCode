@@ -651,43 +651,33 @@ console.log(`La valeur de l'accumulateur est de ${accumulator}`)
 
 // 2
 
-const test_program_loop = (operationList) => {
+const test_program_loop = (operationList1) => {
     const visited_indexes_list = []
-    let isLoop = false
-    let current_index = 0
-    let accumulator = 0
+    let isLoop1 = false
+    let current_index1 = 0
+    let accumulator1 = 0
 
-    const sizeOperation = operationList.length
-    while (!isLoop && current_index < sizeOperation) {
+    const sizeOperation = operationList1.length
+    while (!isLoop1 && current_index1 < sizeOperation) {
 
-        visited_indexes_list.push(current_index)
+        visited_indexes_list.push(current_index1)
 
-        const curr_operation = operationList[current_index]
+        const curr_operation = operationList1[current_index1]
         if (curr_operation[0] === 'acc') {
-            accumulator += curr_operation[1]
-            current_index += 1
+            accumulator1 += curr_operation[1]
+            current_index1 += 1
         } else if (curr_operation[0] === 'nop') {
-            current_index += 1
+            current_index1 += 1
         } else if (curr_operation[0] === 'jmp'){
-            current_index += curr_operation[1]
+            current_index1 += curr_operation[1]
         }
 
-        isLoop = visited_indexes_list.findIndex( x => x === current_index) !== -1
+        isLoop1 = visited_indexes_list.findIndex( x => x === current_index1) !== -1
     }
 
-    if ( current_index === sizeOperation) {
-        const curr_operation = operationList[current_index - 2]
-        if (curr_operation[0] === 'acc') {
-            accumulator += curr_operation[1]
-            current_index += 1
-        } else if (curr_operation[0] === 'nop') {
-            current_index += 1
-        } else if (curr_operation[0] === 'jmp'){
-            current_index += curr_operation[1]
-        } 
-    }
-
-    return [isLoop, accumulator]
+    if(!isLoop1) console.table(operationList1)
+    const res = [isLoop1, accumulator1]
+    return res
 }
 
 
@@ -697,4 +687,51 @@ const [nopIndexList, jumpIndexList] = operationList.reduce((acc,x,idx) => {
     } else if (x[0] === 'jmp') {
         acc[1].push(idx)
     }
+    return acc
 }, [[],[]])
+
+// On fait les nop
+
+isLoop = true
+accumulator = 0
+current_index = 0
+
+while (isLoop && current_index < nopIndexList.length) {
+    const cur_op_list = operationList.reduce((acc,x) => {
+        acc.push([...x])
+        return acc
+    }, [] )
+    curr_nop_index = nopIndexList[current_index]
+
+    cur_op_list[curr_nop_index][0] = 'jmp'
+
+    const res = test_program_loop(cur_op_list)
+    isLoop = res[0]
+    accumulator = res[1]
+    current_index += 1
+}
+
+if (!isLoop) {
+    console.log(`Accumulateur : ${accumulator}`)
+} else {
+    isLoop = true
+    accumulator = 0
+    current_index = 0
+
+    while (isLoop && current_index < jumpIndexList.length) {
+        const cur_op_list = operationList.reduce((acc,x) => {
+            acc.push([...x])
+            return acc
+        }, [] )
+        curr_jmp_index = jumpIndexList[current_index]
+
+        cur_op_list[curr_jmp_index][0] = 'nop'
+        
+        const res = test_program_loop(cur_op_list)
+        isLoop = res[0]
+        accumulator = res[1]
+        current_index += 1
+    }
+
+    console.log(`Accumulateur : ${accumulator}`)
+}
