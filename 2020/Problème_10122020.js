@@ -4,6 +4,8 @@ const input = [
     90,121,123,33,98,1,40
 ]
 
+
+
 const CHARGE_INPUT = 0
 const DELTA_CHARGE = 3
 
@@ -26,3 +28,84 @@ for (let i = 0; i < input.length - 1; ++i) {
 console.log(`Différence de 1 : ${numberOfOneDifference}`)
 console.log(`Différence de 3 : ${numberOfThreeDifference}`)
 console.log(`Total : ${numberOfOneDifference * numberOfThreeDifference}`)
+
+// 2
+
+const MAX_LENGTH = input.length
+const numberOfCombinaisonObject = {}
+
+const calculateNumberOfCombinaison = (curIndex, numberOfCombinaisonObject) => {
+    let currNumberOfCombinaisonObject = numberOfCombinaisonObject
+    if (curIndex === MAX_LENGTH - 1) return {res: 1, numberOfCombinaisonObject: currNumberOfCombinaisonObject}
+
+    const curVal = input[curIndex]
+    let curNb = 0
+    if (curIndex + 1 <= MAX_LENGTH - 1) {
+        if (input[curIndex + 1] - curVal <= 3) {
+            if (!currNumberOfCombinaisonObject[curIndex + 1]) {
+                const {res, numberOfCombinaisonObject: currNumberObject} = calculateNumberOfCombinaison(curIndex + 1, currNumberOfCombinaisonObject)
+                currNumberOfCombinaisonObject = currNumberObject
+                currNumberOfCombinaisonObject[curIndex + 1] = res
+                curNb += res
+            } else {
+                curNb += currNumberOfCombinaisonObject[curIndex + 1]
+            }    
+        }  
+    } 
+    if (curIndex + 2 <= MAX_LENGTH - 1) {
+        if (input[curIndex + 2] - curVal <= 3) {
+            if (!currNumberOfCombinaisonObject[curIndex + 2]) {
+                const {res, numberOfCombinaisonObject: currNumberObject} = calculateNumberOfCombinaison(curIndex + 2, currNumberOfCombinaisonObject)
+                currNumberOfCombinaisonObject = currNumberObject
+                currNumberOfCombinaisonObject[curIndex + 2] = res
+                curNb += res
+                
+            } else {
+                curNb += currNumberOfCombinaisonObject[curIndex + 2]
+            } 
+        }  
+    } 
+    if (curIndex + 3 <= MAX_LENGTH - 1) {
+        if (input[curIndex + 3] - curVal <= 3) {
+            if (!currNumberOfCombinaisonObject[curIndex + 3]) {
+                const {res, numberOfCombinaisonObject: currNumberObject} = calculateNumberOfCombinaison(curIndex + 2, currNumberOfCombinaisonObject)
+                currNumberOfCombinaisonObject = currNumberObject
+                currNumberOfCombinaisonObject[curIndex + 3] = res
+                curNb += res
+            } else {
+                curNb += currNumberOfCombinaisonObject[curIndex + 3]
+            }    
+        }  
+    }
+    return {res: curNb, numberOfCombinaisonObject: currNumberOfCombinaisonObject}
+}
+
+let curRes = 0
+let curObj = {}
+
+if (input[0] <= 3) {
+    const result = calculateNumberOfCombinaison(0, curObj)
+    curRes += result.res
+    curObj = result.numberOfCombinaisonObject
+    curObj[0] = result.res
+}
+console.log(1)
+if (input[1] <= 3) {
+    const result = calculateNumberOfCombinaison(1, curObj)
+    curRes += result.res
+    curObj = result.numberOfCombinaisonObject
+    curObj[1] = result.res
+}
+console.log(2)
+if (input[2] <= 3) {
+    const result = calculateNumberOfCombinaison(2, curObj)
+    curRes += result.res
+    curObj = result.numberOfCombinaisonObject
+    curObj[2] = result.res
+}
+
+console.log(curObj)
+console.log(`Nombre total de combinaison : ${curRes} `)
+
+
+// 18512297918464
