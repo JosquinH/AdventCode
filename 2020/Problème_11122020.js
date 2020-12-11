@@ -99,7 +99,93 @@ let input = [
     'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL.LLLLLLLLLLLLLLLLL.LLLLLLL.LLLLLLL.LLLLL.LLLLLLLL.LLLLLL'
 ]
 
-input = input.reduce((acc,x) => {acc.push(x.split('')); return acc;}, [])
+let pointString = ''
 
-console.log(input)
+for (let i = 0; i < input[0].length + 2; ++i) {
+    pointString = `${pointString}.`
+}
 
+input = input.map(x => `.${x}.`)
+
+input = [pointString, ...input, pointString]
+input = input.reduce((acc, x) => { acc.push(x.split('')); return acc; }, [])
+
+const X_MIN = 1
+const X_MAX = input[0].length - 1
+
+const Y_MIN = 1
+const Y_MAX = input[0].length - 1
+
+const getNextStep = (input) => {
+
+    let ancientInput = input.reduce((acc, x) => {
+        acc.push([...x])
+        return acc
+    }, [])
+
+    let isSame = true
+
+    for (let i = Y_MIN; i < Y_MAX; ++i) {
+        for (let j = X_MIN; j < Y_MAX; ++j) {
+
+            let curVal = input[i][j]
+            let newVal = curVal
+
+            if (curVal === 'L') {
+                let adjacentOccupied = false
+                for (let i1 = i - 1; i1 <= i + 1; ++i1) {
+                    for (let j1 = j - 1; j1 <= j + 1; ++j1) {
+                        if (!(i1 === i && j1 === j)) {
+                            if (ancientInput[i1][j1] === '#') {
+                                adjacentOccupied = true
+                            }
+                        }
+                    }
+                }
+                if (!adjacentOccupied) {
+                    isSame = false
+                    input[i][j] = '#'
+                }
+            }
+
+            if (curVal === '#') {
+                let nbAdjacentOccupied = 0
+                for (let i1 = i - 1; i1 <= i + 1; ++i1) {
+                    for (let j1 = j - 1; j1 <= j + 1; ++j1) {
+                        if (!(i1 === i && j1 === j)) {
+                            if (ancientInput[i1][j1] === '#') {
+                                nbAdjacentOccupied += 1
+                            }
+                        }
+                    }
+                }
+
+                if (nbAdjacentOccupied >= 4) {
+                    isSame = false
+                    input[i][j] = 'L'
+                }
+            }
+        }
+    }
+
+    return isSame
+}
+
+
+let isSame = false
+
+let step = 1
+
+while (!isSame) {
+    console.log(`Étape : ${step}`)
+    console.log(input.map(x => x.join('')).join('\n'))
+    isSame = getNextStep(input)
+    step += 1
+}
+
+console.log(`Étape : ${step}`)
+console.log(input.map(x => x.join('')).join('\n'))
+
+const numberOfSeat = input.reduce((acc, x) => acc + x.filter(y => y === '#').length, 0)
+
+console.log(`Résultat : ${numberOfSeat}`)
