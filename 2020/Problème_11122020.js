@@ -99,6 +99,20 @@ let input = [
     'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL.LLLLLLLLLLLLLLLLL.LLLLLLL.LLLLLLL.LLLLL.LLLLLLLL.LLLLLL'
 ]
 
+
+/* let input = [
+    'L.LL.LL.LL',
+    'LLLLLLL.LL',
+    'L.L.L..L..',
+    'LLLL.LL.LL',
+    'L.LL.LL.LL',
+    'L.LLLLL.LL',
+    '..L.L.....',
+    'LLLLLLLLLL',
+    'L.LLLLLL.L',
+    'L.LLLLL.LL'
+]
+ */
 let pointString = ''
 
 for (let i = 0; i < input[0].length + 2; ++i) {
@@ -115,9 +129,10 @@ const X_MAX = input[0].length - 1
 
 const Y_MIN = 1
 const Y_MAX = input[0].length - 1
-const getNextStep = (input) => {
 
-    let ancientInput = input.reduce((acc, x) => {
+const getNextStep = (curInput) => {
+
+    let ancientInput = curInput.reduce((acc, x) => {
         acc.push([...x])
         return acc
     }, [])
@@ -127,7 +142,7 @@ const getNextStep = (input) => {
     for (let i = Y_MIN; i < Y_MAX; ++i) {
         for (let j = X_MIN; j < Y_MAX; ++j) {
 
-            let curVal = input[i][j]
+            let curVal = ancientInput[i][j]
             let newVal = curVal
 
             if (curVal === 'L') {
@@ -143,7 +158,7 @@ const getNextStep = (input) => {
             
                 if (!adjacentOccupied) {
                     isSame = false
-                    input[i][j] = '#'
+                    curInput[i][j] = '#'
                 }
             } else if (curVal === '#') {
                 let nbAdjacentOccupied = 0
@@ -156,9 +171,9 @@ const getNextStep = (input) => {
                 if (ancientInput[i+1][j-1] === '#') nbAdjacentOccupied += 1
                 if (ancientInput[i][j-1] === '#') nbAdjacentOccupied += 1
 
-                if (nbAdjacentOccupied >= 4) {
+                if (nbAdjacentOccupied >=4) {
                     isSame = false
-                    input[i][j] = 'L'
+                    curInput[i][j] = 'L'
                 }
             }
         }
@@ -174,13 +189,13 @@ let step = 1
 
 while (!isSame) {
     console.log(`Étape : ${step}`)
-    // console.log(input.map(x => x.join('')).join('\n'))
+    console.log(input.map(x => x.join('')).join('\n'))
     isSame = getNextStep(input)
     step += 1
 }
 
 console.log(`Étape : ${step}`)
-//console.log(input.map(x => x.join('')).join('\n'))
+console.log(input.map(x => x.join('')).join('\n'))
 
 let numberOfSeat = 0
 
