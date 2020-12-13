@@ -1,4 +1,4 @@
-let input = [
+/* let input = [
     'LLLLL.LLLLLLL.LLLLLL.L.LLLL..LLLL.LLLLLLLLL.LLLLLLLL.LLLLLLLLLLLLL.L.LLLLLLLLLLLLLL.LLLLLL',
     'LLLLLLLLLLLLLLL.LLLL..LLLLLLLLLLLL.LLLLLLLL.L..LLLLLLLLLLLL.LLLL.LLL.LLLLL.LLL.LLLLLLLLLLL',
     'LLLLL.LLLLLLLLLLLLLLLLLLLLL.LLLLLL.LLLLLLLLLLL.LLL.LLLLLLLL.LLLLL.LL.LLLLL.LLLLLLLL.LLLLLL',
@@ -97,10 +97,10 @@ let input = [
     'LLLLL.LLLLLLLLL.LLLL.LLLLLL.LLLLLL.LLLLLLLL.LLLLLLLL.LLLLLLLLLLLLLLL.LLLL..LLLLLLLL.LLLLLL',
     'LLLLL.LLLLLLLLLLLLLL.L.LLLL.LLLL.L.LLLLLLLL.LLLLLLLL.LLL.LL.LLLLLLLL.LLLLL.LLLLLLLL.LLLLLL',
     'LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL.LLLLLLLLLLLLLLLLL.LLLLLLL.LLLLLLL.LLLLL.LLLLLLLL.LLLLLL'
-]
+] */
 
 
-/* let input = [
+let input = [
     'L.LL.LL.LL',
     'LLLLLLL.LL',
     'L.L.L..L..',
@@ -112,7 +112,7 @@ let input = [
     'L.LLLLLL.L',
     'L.LLLLL.LL'
 ]
- */
+
 let pointString = ''
 
 for (let i = 0; i < input[0].length + 2; ++i) {
@@ -136,6 +136,8 @@ const getNextStep = (curInput) => {
         acc.push([...x])
         return acc
     }, [])
+
+    console.log('yoyoy1', ancientInput.map(x => x.join('')).join('\n'))
 
     let isSame = true
 
@@ -176,8 +178,11 @@ const getNextStep = (curInput) => {
                     curInput[i][j] = 'L'
                 }
             }
+
         }
     }
+
+    console.log('yoyoy2', ancientInput.map(x => x.join('')).join('\n'))
 
     return isSame
 }
