@@ -115,7 +115,6 @@ const X_MAX = input[0].length - 1
 
 const Y_MIN = 1
 const Y_MAX = input[0].length - 1
-
 const getNextStep = (input) => {
 
     let ancientInput = input.reduce((acc, x) => {
@@ -133,32 +132,29 @@ const getNextStep = (input) => {
 
             if (curVal === 'L') {
                 let adjacentOccupied = false
-                for (let i1 = i - 1; i1 <= i + 1; ++i1) {
-                    for (let j1 = j - 1; j1 <= j + 1; ++j1) {
-                        if (!(i1 === i && j1 === j)) {
-                            if (ancientInput[i1][j1] === '#') {
-                                adjacentOccupied = true
-                            }
-                        }
-                    }
-                }
+                if (ancientInput[i-1][j-1] === '#') adjacentOccupied = true
+                if (ancientInput[i-1][j] === '#') adjacentOccupied = true
+                if (ancientInput[i-1][j+1] === '#') adjacentOccupied = true
+                if (ancientInput[i][j+1] === '#') adjacentOccupied = true
+                if (ancientInput[i+1][j+1] === '#') adjacentOccupied = true
+                if (ancientInput[i+1][j] === '#') adjacentOccupied = true
+                if (ancientInput[i+1][j-1] === '#') adjacentOccupied = true
+                if (ancientInput[i][j-1] === '#') adjacentOccupied = true
+            
                 if (!adjacentOccupied) {
                     isSame = false
                     input[i][j] = '#'
                 }
-            }
-
-            if (curVal === '#') {
+            } else if (curVal === '#') {
                 let nbAdjacentOccupied = 0
-                for (let i1 = i - 1; i1 <= i + 1; ++i1) {
-                    for (let j1 = j - 1; j1 <= j + 1; ++j1) {
-                        if (!(i1 === i && j1 === j)) {
-                            if (ancientInput[i1][j1] === '#') {
-                                nbAdjacentOccupied += 1
-                            }
-                        }
-                    }
-                }
+                if (ancientInput[i-1][j-1] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i-1][j] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i-1][j+1] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i][j+1] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i+1][j+1] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i+1][j] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i+1][j-1] === '#') nbAdjacentOccupied += 1
+                if (ancientInput[i][j-1] === '#') nbAdjacentOccupied += 1
 
                 if (nbAdjacentOccupied >= 4) {
                     isSame = false
@@ -178,14 +174,22 @@ let step = 1
 
 while (!isSame) {
     console.log(`Étape : ${step}`)
-    console.log(input.map(x => x.join('')).join('\n'))
+    // console.log(input.map(x => x.join('')).join('\n'))
     isSame = getNextStep(input)
     step += 1
 }
 
 console.log(`Étape : ${step}`)
-console.log(input.map(x => x.join('')).join('\n'))
+//console.log(input.map(x => x.join('')).join('\n'))
 
-const numberOfSeat = input.reduce((acc, x) => acc + x.filter(y => y === '#').length, 0)
+let numberOfSeat = 0
+
+for (let i = 0; i < input.length; ++i) {
+    for (let j = 0; j < input.length; ++j) {
+        if (input[i][j] === '#') {
+            numberOfSeat += 1
+        }
+    }
+}
 
 console.log(`Résultat : ${numberOfSeat}`)
