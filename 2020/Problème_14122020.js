@@ -104,7 +104,7 @@ for (const operation of input) {
 
 const sum_res = Object.keys(mem).reduce((acc,x) => acc + mem[x], 0)
 
-// console.log(`Résultat : ${sum_res}`)
+console.log(`Résultat 1 : ${sum_res}`)
 
 // 2
 
@@ -175,4 +175,4 @@ for (const operation of input) {
 
 const sum_res_2 = Object.keys(mem_2).reduce((acc,x) => acc + parseInt(mem_2[x]), 0)
 
-console.log(`Résultat : ${sum_res_2}`)
+console.log(`Résultat 2 : ${sum_res_2}`)
