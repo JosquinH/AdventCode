@@ -41,8 +41,49 @@ const input_test = [
 
 let mask = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
+const convert_decimal_to_binaire = (curNumber) => {
+    if (curNumber === 0) return '0'
+
+    let curNumberString = ''
+    let curVal = curNumber
+
+    while (curVal !== 0) {
+        curNumberString = `${curVal % 2}${curNumberString}`
+        curVal = Math.floor(curVal / 2)
+    }
+
+    return curNumberString
+}
+
+const convert_binaire_to_decimal = (curNumber) => {
+    let res = 0
+    for (const current_number of curNumber.split('')) {
+        res = (res * 2) + parseInt(current_number)
+    }
+    return res
+}
+
+const pass_by_mask = (curVal, curMask) => {
+    let cypherVal = ''
+
+    let index_val = curVal.length - 1
+    let index_mask = curMask.length - 1
+
+    while (index_val >= 0 || index_mask>= 0) {
+        if (curMask[index_mask] !== 'X') {
+            cypherVal = `${curMask[index_mask]}${cypherVal}`
+        } else {
+            cypherVal = `${index_val >= 0 ? curVal[index_val] : 0}${cypherVal}`
+        }
+        -- index_val
+        -- index_mask
+    }
+
+    return cypherVal
+}
+
 const mem = {}
-for (const operation of input_test) {
+for (const operation of input) {
 
     const op_split = operation.split('=')
     const op = op_split[0].trim()
@@ -54,9 +95,84 @@ for (const operation of input_test) {
         fstIndex = op.split('').findIndex(x => x === '[')
         lstIndex = op.split('').findIndex(x => x === ']')
         const address = parseInt(op.substring(fstIndex+1,lstIndex))
-        mem[address] = 'toto'
+        const curBinary = convert_decimal_to_binaire(parseInt(value,10))
+        const passMask = pass_by_mask(curBinary, mask)
+        const finalValue = convert_binaire_to_decimal(passMask)
+        mem[address] = finalValue
     }
 }
 
-console.log('mask', mask)
-console.log('mem', mem)
+const sum_res = Object.keys(mem).reduce((acc,x) => acc + mem[x], 0)
+
+// console.log(`Résultat : ${sum_res}`)
+
+// 2
+
+const pass_by_mask_2 = (curVal, curMask) => {
+    let cypherVals = ['']
+
+    let index_val = curVal.length - 1
+    let index_mask = curMask.length - 1
+
+    while (index_val >= 0 || index_mask>= 0) {
+        let curCypherVals = []
+        if (curMask[index_mask] !== 'X') {
+            const val = curMask[index_mask] === '1' ? 1 : (index_val >= 0 ? curVal[index_val] : 0)
+            for ( const cypherVal of cypherVals) {
+                curCypherVals.push(`${val}${cypherVal}`)
+            }
+        } else {
+            for ( const cypherVal of cypherVals) {
+                curCypherVals.push(`0${cypherVal}`)
+                curCypherVals.push(`1${cypherVal}`)
+            } 
+        }
+
+        -- index_val
+        -- index_mask
+        cypherVals = curCypherVals
+    }
+
+    return cypherVals
+}
+
+const input_test_2 = [
+    'mask = 000000000000000000000000000000X1001X',
+    'mem[42] = 100',
+    'mask = 00000000000000000000000000000000X0XX',
+    'mem[26] = 1'
+]
+
+mask = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+const mem_2 = {}
+
+
+
+
+for (const operation of input) {
+
+    const op_split = operation.split('=')
+    const op = op_split[0].trim()
+    const value = op_split[1].trim()
+
+    if (op === 'mask') {
+        mask = value
+    } else {
+        fstIndex = op.split('').findIndex(x => x === '[')
+        lstIndex = op.split('').findIndex(x => x === ']')
+        const address = parseInt(op.substring(fstIndex+1,lstIndex))
+        const curBinary = convert_decimal_to_binaire(parseInt(address,10))
+        const passMaskList = pass_by_mask_2(curBinary, mask)
+        
+        for (const passMask of passMaskList) {
+            const currentAddress =  convert_binaire_to_decimal(passMask)
+            mem_2[currentAddress] = value
+        }
+        
+    }
+}
+
+const sum_res_2 = Object.keys(mem_2).reduce((acc,x) => acc + parseInt(mem_2[x]), 0)
+
+console.log(`Résultat : ${sum_res_2}`)
