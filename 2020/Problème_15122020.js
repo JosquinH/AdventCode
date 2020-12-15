@@ -7,12 +7,12 @@ const objectNbAppear = {}
 
 let curNumber
 let isNew = false
-while (curTurn <= 10) {
-    if (curTurn < input_test.length) {
-        curNumber = input_test[curTurn]
-        if (curTurn < input_test.length - 1) {
-            objectLastIndex[input_test[curTurn]] = curTurn
-            objectNbAppear[input_test[curTurn]] = 1
+while (curTurn < 30000000) {
+    if (curTurn < input.length) {
+        curNumber = input[curTurn]
+        if (curTurn < input.length - 1) {
+            objectLastIndex[input[curTurn]] = curTurn + 1
+            objectNbAppear[input[curTurn]] = 1
         }
         
     } else {
@@ -27,7 +27,10 @@ while (curTurn <= 10) {
             curNumber = 0
         }
     }
-    console.log(curNumber)
+    if (curTurn %100000 === 0 || curTurn === 29999999) {
+        console.log(curTurn,curNumber)
+    }
+    
     ++ curTurn
 
 }
