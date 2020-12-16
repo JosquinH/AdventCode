@@ -31,7 +31,7 @@ const firstNumber = parseInt(input[0])
 const equations = [["Reste A", "Modulo B"],[0,firstNumber]]
 for (let i =1; i < input.length; ++i) {
   if (input[i] !== 'x') {
-    equations.push([-1 * i,  parseInt(input[i])])
+    equations.push([(input[i] - (i % input[i])) % input[i] ,  parseInt(input[i])])
   }
 }
 
