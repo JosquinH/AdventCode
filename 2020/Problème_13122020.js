@@ -70,6 +70,8 @@ while (result < 0) {
   result = result + N
 }
 
+result = result % N
+
 console.log(`Résultat 2 : ${result}`)
 
 console.log('Si ça ne marche pas aller sur https://www.dcode.fr/restes-chinois et utiliser : ')
