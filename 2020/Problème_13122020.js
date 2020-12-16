@@ -25,15 +25,52 @@ for (const curTime of currentInput) {
 console.log(`Le Temps d'Attente Minimal est de ${minTimeToWait} minutes avec le Bus ${idBus}`)
 console.log(`Le Résultat est de : ${minTimeToWait * idBus}`)
 
-// 2
+// 2 - Restes Chinois
+
+const euclide_étendue = (a,b) => {
+  const initial_res = [[a,1,0],[b,0,1]]
+  let i = 1
+  while(initial_res[initial_res.length -1][0] !== 0) {
+    const r = initial_res[i-1][0] - (Math.floor(initial_res[i-1][0] / initial_res[i][0]) * initial_res[i][0])
+    const u = initial_res[i-1][1] - (Math.floor(initial_res[i-1][0] / initial_res[i][0]) * initial_res[i][1])
+    const v = initial_res[i-1][2] - (Math.floor(initial_res[i-1][0] / initial_res[i][0]) * initial_res[i][2])
+    initial_res.push([r,u,v])
+    i += 1
+  }
+
+  return initial_res[initial_res.length - 2]
+}
+
 
 const firstNumber = parseInt(input[0])
-const equations = [["Reste A", "Modulo B"],[0,firstNumber]]
+const equations = [[0,firstNumber]]
 for (let i =1; i < input.length; ++i) {
   if (input[i] !== 'x') {
     equations.push([(input[i] - (i % input[i])) % input[i] ,  parseInt(input[i])])
   }
 }
 
+const N = equations.reduce((acc,x) => acc * x[1], 1)
+
+let result = 0
+
+for (const equation of equations) {
+  const ai = equation[0]
+  const Ni = equation[1]
+  const Ni_cap = N / Ni
+
+  const res_euclide = euclide_étendue(Ni, Ni_cap )
+
+  let ei = res_euclide[2] * Ni_cap
+
+  result =  result + (ei * ai)
+}
+
+while (result < 0) {
+  result = result + N
+}
+
+console.log(`Résultat 2 : ${result}`)
+
+console.log('Si ça ne marche pas aller sur https://www.dcode.fr/restes-chinois et utiliser : ')
 console.table(equations)
-console.log("Aller sur https://www.dcode.fr/restes-chinois")
