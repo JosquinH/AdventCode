@@ -1,4 +1,4 @@
-const input = require('./Input_20211201')
+const input = require('./input/input_20211201')
 
 // 1
 

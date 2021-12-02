@@ -1,4 +1,4 @@
-const input = require('./Input_20211202')
+const input = require('./input/input_20211202')
 
 const newInput = input.map(x => {
     const curVal = x.split(' ')
