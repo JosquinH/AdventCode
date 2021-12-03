@@ -24,7 +24,7 @@ for (let i = 0; i < newInput.length; ++i) {
         d += (newInput[i].step * newInput[i].direction)
     }
 }
-console.log(`1st question response : ${h * d}`)
+console.log(`1st question's answer : ${h * d}`)
 
 // 1
 
@@ -39,4 +39,4 @@ for (let i = 0; i < newInput.length; ++i) {
         a += (newInput[i].step * newInput[i].direction)
     }
 }
-console.log(`2nd question response : ${h1 * d1}`)
+console.log(`2nd question's answer : ${h1 * d1}`)

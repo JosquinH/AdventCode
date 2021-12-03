@@ -10,7 +10,7 @@ for (let i = 1; i < input.length; ++i) {
     }
 }
 
-console.log(`1st question response : ${nbIncrease}`)
+console.log(`1st question's answer : ${nbIncrease}`)
 
 // 2
 
@@ -24,4 +24,4 @@ for (let i = 1; i < input.length - 2; ++i) {
     }
 }
 
-console.log(`2nd question response : ${nbIncrease2}`)
+console.log(`2nd question's answer : ${nbIncrease2}`)
