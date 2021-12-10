@@ -5,5 +5,5 @@ Mes codes pour adventCode https://adventofcode.com/
 
 **2020** : 16*
 
-**2021** : 4*
+**2021** : 20*
 
