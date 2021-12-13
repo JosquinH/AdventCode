@@ -98,12 +98,12 @@ console.log(`1st question's answer : ${numberOfPointAfterFirstFold}`)
 
 // 2
 
-console.log("2nd question's answer:")
+console.log("2nd question's answer : ")
 for (const t of ancientInput) {
     const letterLength = t.length / 8
     let str = ''
     for (let i = 0; i < 8; ++ i) {
-        str += t.slice(i*letterLength,(i+1)*letterLength).join('')
+        str += t.slice(i*letterLength,(i+1)*letterLength - 1).join('')
         str += '  '
     }
     console.log(str.trim())
