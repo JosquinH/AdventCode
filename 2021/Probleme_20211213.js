@@ -25,13 +25,14 @@ for (let i = 0; i <= maxY; ++ i) {
     newInput.push(curInput)
 }
 
-for (const dot of dots2) {
+/* for (const dot of dots2) {
     newInput[dot[0]][dot[1]] = '#'
 }
-
-// 1
-
+ */
 let ancientInput = newInput
+
+let numberOfPointAfterFirstFold = 0
+let havePassFirstFold = false
 
 for (const instruction of instructions) {
     for (const t of ancientInput) {
@@ -77,8 +78,14 @@ for (const instruction of instructions) {
         }
     }
     ancientInput = curNewInput
+    if (!havePassFirstFold) {
+        numberOfPointAfterFirstFold = ancientInput.reduce((acc,x) => acc + x.filter(y => y === '#').length, 0)
+        havePassFirstFold = true
+    }
 }
 
-for (const t of ancientInput) {
+console.log(`1st question's answer : ${numberOfPointAfterFirstFold}`)
+
+/* for (const t of ancientInput) {
     console.log(t.join(''))
-}
+} */
