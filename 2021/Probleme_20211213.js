@@ -79,15 +79,17 @@ for (const instruction of instructions) {
                     curLine.unshift('.')
                 }
             }
-            if (max < x1) {
-                for (let i = x1 - max - 1; i >= 0; --i) {
-                    curLine.unshift(line[i])
-                }
+
+            for (let i = x1 - max - 1; i >= 0; --i) {
+                curLine.unshift(line[i])
             }
+
             curNewInput.push(curLine)
         }
     }
+    
     ancientInput = curNewInput
+
     if (!havePassFirstFold) {
         numberOfPointAfterFirstFold = ancientInput.reduce((acc,x) => acc + x.filter(y => y === '#').length, 0)
         havePassFirstFold = true
