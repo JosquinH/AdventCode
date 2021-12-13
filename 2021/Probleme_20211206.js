@@ -10,43 +10,24 @@ for (let i = 0; i < input.length; ++i ) {
 
 let day = 0
 
-while (day < 80) {
-    const numberOfZeroFish = lanternfishTab[0]
-    lanternfishTab[0] = lanternfishTab[1]
-    lanternfishTab[1] = lanternfishTab[2]
-    lanternfishTab[2] = lanternfishTab[3]
-    lanternfishTab[3] = lanternfishTab[4]
-    lanternfishTab[4] = lanternfishTab[5]
-    lanternfishTab[5] = lanternfishTab[6]
-    lanternfishTab[6] = lanternfishTab[7]
-    lanternfishTab[7] = lanternfishTab[8]
+let res1 = 0
 
+while (day < 256) {
+    const numberOfZeroFish = lanternfishTab[0]
+    for (let i = 0; i < 8; ++i) {
+        lanternfishTab[i] = lanternfishTab[i+1]
+    }
     lanternfishTab[6] += numberOfZeroFish
     lanternfishTab[8] = numberOfZeroFish
     ++day
-}
-
-const res1 = lanternfishTab.reduce((acc,x) => acc + x, 0)
+    if (day === 80) {
+        res1 = lanternfishTab.reduce((acc,x) => acc + x, 0)
+    }
+} 
 
 console.log(`1st question's answer : ${res1}`)
 
 // 2
-
-while (day < 256) {
-    const numberOfZeroFish = lanternfishTab[0]
-    lanternfishTab[0] = lanternfishTab[1]
-    lanternfishTab[1] = lanternfishTab[2]
-    lanternfishTab[2] = lanternfishTab[3]
-    lanternfishTab[3] = lanternfishTab[4]
-    lanternfishTab[4] = lanternfishTab[5]
-    lanternfishTab[5] = lanternfishTab[6]
-    lanternfishTab[6] = lanternfishTab[7]
-    lanternfishTab[7] = lanternfishTab[8]
-
-    lanternfishTab[6] += numberOfZeroFish
-    lanternfishTab[8] = numberOfZeroFish
-    ++day
-}
 
 const res2 = lanternfishTab.reduce((acc,x) => acc + x, 0)
 

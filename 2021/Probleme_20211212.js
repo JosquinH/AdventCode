@@ -14,7 +14,7 @@ for (const curInput of input) {
             typeOfNode = 'start'
         } else if (node1 === 'end') {
             typeOfNode = 'end'
-        } else if (node1.charCodeAt(0) - 'A'.charCodeAt(0) >= 0 && node1.charCodeAt(0) - 'A'.charCodeAt(0) < 26) {
+        } else if (/[A-Z]+/.test(node1)) {
             typeOfNode = 'big'
         }
         graphe[node1] = { type: typeOfNode, adjacentNode: [node2] }
@@ -28,7 +28,7 @@ for (const curInput of input) {
             typeOfNode = 'start'
         } else if (node2 === 'end') {
             typeOfNode = 'end'
-        } else if (node2.charCodeAt(0) - 'A'.charCodeAt(0) >= 0 && node2.charCodeAt(0) - 'A'.charCodeAt(0) < 26) {
+        } else if (/[A-Z]+/.test(node2)) {
             typeOfNode = 'big'
         }
         graphe[node2] = { type: typeOfNode, adjacentNode: [node1] }
