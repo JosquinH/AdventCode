@@ -36,12 +36,7 @@ let ancientInput = newInput
 let numberOfPointAfterFirstFold = 0
 let havePassFirstFold = false
 
-console.log(maxX, maxY)
 for (const instruction of instructions) {
-    /* for (const t of ancientInput) {
-        console.log(t.join(''))
-    }
-    console.log('\n') */
     const axe = instruction.split('=')[0]
     const axeVal = parseInt(instruction.split('=')[1])
     
@@ -53,9 +48,6 @@ for (const instruction of instructions) {
 
         const max = Math.min(y1, ancientInput.length - y2 - 1)
 
-        if (axeVal === 4) {
-             console.log(y1,y2, max)   
-        }
         for (let i = 0; i <= max; ++i) {
             const curLine = []
             const line1 = ancientInput[y1 - i]
@@ -70,7 +62,7 @@ for (const instruction of instructions) {
             curNewInput.unshift(curLine)
         }
 
-        for (let i = y1 - max -1; i >= 0; --i) {
+        for (let i = y1 - max - 1; i >= 0; --i) {
             curNewInput.unshift(ancientInput[i])
         }
 
@@ -88,7 +80,7 @@ for (const instruction of instructions) {
                 }
             }
             if (max < x1) {
-                for (let i = x1 -1; i >= 0; --i) {
+                for (let i = x1 - max - 1; i >= 0; --i) {
                     curLine.unshift(line[i])
                 }
             }
@@ -106,7 +98,14 @@ console.log(`1st question's answer : ${numberOfPointAfterFirstFold}`)
 
 // 2
 
+console.log("2nd question's answer:")
 for (const t of ancientInput) {
-    console.log(t.join(''))
+    const letterLength = t.length / 8
+    let str = ''
+    for (let i = 0; i < 8; ++ i) {
+        str += t.slice(i*letterLength,(i+1)*letterLength).join('')
+        str += '  '
+    }
+    console.log(str.trim())
 }
 
