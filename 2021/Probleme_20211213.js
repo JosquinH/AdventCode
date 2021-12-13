@@ -1,4 +1,4 @@
-const {dots, instructions} = require('./input/input_test')
+const {dots, instructions} = require('./input/input_20211213')
 
 // Formattage
 
@@ -25,22 +25,23 @@ for (let i = 0; i <= maxY; ++ i) {
     newInput.push(curInput)
 }
 
-/* for (const dot of dots2) {
+for (const dot of dots2) {
     newInput[dot[0]][dot[1]] = '#'
 }
- */
+
+// 1
+
 let ancientInput = newInput
 
 let numberOfPointAfterFirstFold = 0
 let havePassFirstFold = false
 
+console.log(maxX, maxY)
 for (const instruction of instructions) {
-    for (const t of ancientInput) {
+    /* for (const t of ancientInput) {
         console.log(t.join(''))
     }
-
-    console.log('\n')
-    
+    console.log('\n') */
     const axe = instruction.split('=')[0]
     const axeVal = parseInt(instruction.split('=')[1])
     
@@ -49,7 +50,13 @@ for (const instruction of instructions) {
     if (axe === 'y') {
         const y1 = axeVal - 1
         const y2 = axeVal + 1
-        for (let i = y1; i >= 0; --i) {
+
+        const max = Math.min(y1, ancientInput.length - y2 - 1)
+
+        if (axeVal === 4) {
+             console.log(y1,y2, max)   
+        }
+        for (let i = 0; i <= max; ++i) {
             const curLine = []
             const line1 = ancientInput[y1 - i]
             const line2 = ancientInput[y2 + i]
@@ -60,18 +67,29 @@ for (const instruction of instructions) {
                     curLine.push('.')
                 }
             }
-            curNewInput.push(curLine)
+            curNewInput.unshift(curLine)
         }
+
+        for (let i = y1 - max -1; i >= 0; --i) {
+            curNewInput.unshift(ancientInput[i])
+        }
+
     } else if (axe === 'x') {
         const x1 = axeVal - 1
         const x2 = axeVal + 1
+        const max = Math.min(x1, ancientInput[0].length - x2 - 1)
         for (const line of ancientInput) {
             const curLine = []
-            for (let i = x1; i >= 0; --i) {
+            for (let i = 0; i <= max; ++i) {
                 if (line[x1 - i] === '#' || line[x2 + i] === '#') {
-                    curLine.push('#')
+                    curLine.unshift('#')
                 } else {
-                    curLine.push('.')
+                    curLine.unshift('.')
+                }
+            }
+            if (max < x1) {
+                for (let i = x1 -1; i >= 0; --i) {
+                    curLine.unshift(line[i])
                 }
             }
             curNewInput.push(curLine)
@@ -86,6 +104,9 @@ for (const instruction of instructions) {
 
 console.log(`1st question's answer : ${numberOfPointAfterFirstFold}`)
 
-/* for (const t of ancientInput) {
+// 2
+
+for (const t of ancientInput) {
     console.log(t.join(''))
-} */
+}
+

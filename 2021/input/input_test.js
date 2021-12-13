@@ -19,6 +19,6 @@ const dots = [
 '9,0'
 ]
 
-const instructions = ['y=7', 'x=5']
+const instructions = ['x=7']
 
 module.exports = {dots, instructions}
