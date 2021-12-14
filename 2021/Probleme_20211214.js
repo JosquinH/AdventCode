@@ -103,7 +103,7 @@ res1.sort((a,b) => a - b)
 
 console.log(`1st question's answer : ${res1[res1.length - 1] - res1[0]}`)
 
-// 1
+// 2
 
 const objOccur2 = {}
 
