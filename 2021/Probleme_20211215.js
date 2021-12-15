@@ -12,7 +12,11 @@ for (const curInput of input) {
 
 const INPUT_HEIGHT = newInput.length
 const INPUT_WIDTH = newInput[0].length
+
 const graphe = {}
+const nodeMinDistance = {}
+const nodes = []
+
 for (let i = 0; i < INPUT_HEIGHT; ++i) {
     for (let j = 0; j < INPUT_WIDTH; ++j) {
         const adjacenceList = []
@@ -25,11 +29,15 @@ for (let i = 0; i < INPUT_HEIGHT; ++i) {
         if (j > 0) {
             adjacenceList.push([`${i};${j-1}`, newInput[i][j-1]])
         }
-        if (j< INPUT_WIDTH - 1) {
+        if (j < INPUT_WIDTH - 1) {
             adjacenceList.push([`${i};${j+1}`, newInput[i][j+1]])
+        }
+        if (i > 0 && j > 0) {
+            nodes.push(`${i};${j}`)
+            nodeMinDistance[`${i};${j}`] = Number.MAX_SAFE_INTEGER
         }
         graphe[`${i};${j}`] = adjacenceList
     }
 }
 
-console.log(graphe)
+// 1
