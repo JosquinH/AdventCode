@@ -1,3 +1,3 @@
-const input = "C200B40A82"
+const input = "9C0141080250320F1802104A08"
 
 module.exports = input

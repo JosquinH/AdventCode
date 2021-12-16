@@ -1,4 +1,4 @@
-const input = require('./input/input_test2')
+const input = require('./input/input_20211216')
 
 // Reformattage
 const hexaObj = {
@@ -77,13 +77,13 @@ console.log(`1st question's answer : ${sumOfVersion}`)
 
 // 2
 
-const getResultsOfPacket = (packet) => {
+const getResultsOfPacket = (packet,curIndex,numberOfLitteralToFind=0) => {
     const INPUT_LENGTH = packet.length
-    console.log(packet.length)
     let step = 'READ_V'
-    let i = 0
-    let cur_OP = ''
-    let curRes = 0
+    let i = curIndex
+    let curOperator
+    const allLiteralToFind = []
+
     while (i < INPUT_LENGTH) {
         if (step === 'READ_V') {
             i += 3
@@ -92,47 +92,71 @@ const getResultsOfPacket = (packet) => {
             let curType = packet.slice(i, i+3).join('')
             i += 3
             curType = fromBinToDec(curType)
-            console.log(curType)
+            console.log(`type : ${curType}`)
             if (curType === 4) {
                 step = 'READ_LITTERAL'
             } else {
+                curOperator = curType
                 step = 'READ_OPERATOR'
             }
             
         } else if (step === 'READ_LITTERAL') {
             let litteral = packet.slice(i, i+5)
-            let num = packet.slice(1,i+5).join('')
+            let num = packet.slice(i+1,i+5).join('')
             while (litteral[0] === '1') {
                i +=5
                litteral = packet.slice(i, i+5)
-               num += packet.slice(1,i+5).join('')
+               num += packet.slice(i+1,i+5).join('')
             }
             i += 5
             num = fromBinToDec(num)
-            if (INPUT_LENGTH - i < 4) {
-                i += 5
-            } else {
-                step = 'READ_V'
-            }   
+            allLiteralToFind.push(num)
+            if (numberOfLitteralToFind && allLiteralToFind.length === numberOfLitteralToFind) {
+                return [allLiteralToFind,i]
+            }
+            step = 'READ_V'   
         } else if (step === 'READ_OPERATOR') {
             const lengthID = packet[i]
             i += 1
-            console.log('yooyo', lengthID)
+            let litterals = []
             if (lengthID === '0') {
                 let subPacketLength = packet.slice(i,i+15).join('')
                 i += 15
                 subPacketLength = fromBinToDec(subPacketLength)
-                let curSumOfVersion = getVersionsOfPacket(packet.slice(i,i+subPacketLength))
+                const [curLitteral,newIndex] = getResultsOfPacket(packet.slice(i,i+subPacketLength),0,0)
+                litterals = curLitteral
                 i += subPacketLength
-                step = 'READ_V'
             } else if (lengthID === '1') {
-                i += 11
-                step = 'READ_V'
+                const numOfSubPacket = packet.slice(i,i+11).join('')
+                const numOfSubPacketDec = fromBinToDec(numOfSubPacket)
+                const [curLitteral,newIndex] = getResultsOfPacket(packet,i+11,numOfSubPacketDec)
+                litterals = curLitteral
+                i = newIndex
             }
+
+            if (curOperator === 0) {
+                allLiteralToFind.push(litterals.reduce((acc,x) => acc + x, 0))
+            } else if (curOperator === 1) {
+                allLiteralToFind.push(litterals.reduce((acc,x) => acc * x, 1))
+            } else if (curOperator === 2) {
+                allLiteralToFind.push(Math.min(...litterals))
+            } else if (curOperator === 3) {
+                allLiteralToFind.push(Math.max(...litterals))
+            } else if (curOperator === 5) {
+                allLiteralToFind.push(litterals[0] > litterals[1] ? 1 : 0)
+            } else if (curOperator === 6) {
+                allLiteralToFind.push(litterals[0] < litterals[1] ? 1 : 0)
+            } else if (curOperator === 7) {
+                allLiteralToFind.push(litterals[0] === litterals[1] ? 1 : 0)
+            } 
+            
+            step = 'READ_V'
         }
     }
-    return curRes
+    return [allLiteralToFind,i]
 }
 
-const res = getResultsOfPacket(newInput)
+const res = getResultsOfPacket(newInput,0,0)
+
+console.log(`2nd question's answer : ${res[0][0]}`)
 
