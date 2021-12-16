@@ -16,12 +16,12 @@ const fromBinToDec = x => x.split('').reduce((acc,y) => (acc * 2) + parseInt(y),
 
 // 1
 
-i = 0
-let step = 'READ_V'
-let sumOfVersion = 0
-let curNumberOfBit = 0
-
-while (i < newInput.length) {
+const getVersionsOfPacket = (packet) => {
+    const INPUT_LENGTH = newInput.length
+    let sumOfVersion = 0
+    let version = 
+}
+while (i < INPUT_LENGTH) {
     if (step === 'READ_V') {
         let curVersion = newInput.slice(i, i+3).join('')
         i += 3
@@ -47,11 +47,6 @@ while (i < newInput.length) {
            curNumberOfBit+=5
         }
         i +=5
-        curNumberOfBit+=5
-
-        let offsetToAdd = (4 - (curNumberOfBit%4)) % 4
-        i += offsetToAdd
-        curNumberOfBit = 0
         step = 'READ_V'
     } else if (step === 'READ_OPERATOR') {
         
