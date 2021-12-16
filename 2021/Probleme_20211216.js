@@ -12,5 +12,37 @@ for (const curInput of input.split('')) {
     newInput.push(...hexaObj[curInput].split(''))
 }
 
-console.log(newInput.join(''))
+const fromBinToDec = x => x.split('').reduce((acc,y) => (acc * 2) + parseInt(y),0)
+
+// 1
+
+i = 0
+
+let step = 'READ_V'
+let curVersion = ''
+let type = ''
+let sumOfVersion = 0
+let curNumberOfBit = 0
+while (i < newInput.length) {
+    if (step === 'READ_V') {
+        curVersion = newInput.slice(i, i+3).join('')
+        i += 3
+        sumOfVersion += fromBinToDec(curVersion)
+        step = 'READ_T'
+        curNumberOfBit+=3
+    } else if (step === 'READ_T') {
+        let curType = newInput.slice(i, i+3).join('')
+        i += 3
+        curType = fromBinToDec(curType)
+        curNumberOfBit+=3
+        if (curType === 4) {
+            step = 'READ_LITTERAL'
+        } else {
+            step = 'READ_OPERATOR'
+        }
+        
+    } else if (step === 'READ_LITTERAL') {
+
+    }
+}
 
