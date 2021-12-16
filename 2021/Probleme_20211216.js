@@ -17,15 +17,13 @@ const fromBinToDec = x => x.split('').reduce((acc,y) => (acc * 2) + parseInt(y),
 // 1
 
 i = 0
-
 let step = 'READ_V'
-let curVersion = ''
-let type = ''
 let sumOfVersion = 0
 let curNumberOfBit = 0
+
 while (i < newInput.length) {
     if (step === 'READ_V') {
-        curVersion = newInput.slice(i, i+3).join('')
+        let curVersion = newInput.slice(i, i+3).join('')
         i += 3
         sumOfVersion += fromBinToDec(curVersion)
         step = 'READ_T'
@@ -42,7 +40,22 @@ while (i < newInput.length) {
         }
         
     } else if (step === 'READ_LITTERAL') {
+        let litteral = newInput.slice(i, i+5)
+        while (litteral[0] === '1') {
+           i +=5
+           litteral = newInput.slice(i, i+5)
+           curNumberOfBit+=5
+        }
+        i +=5
+        curNumberOfBit+=5
 
+        let offsetToAdd = (4 - (curNumberOfBit%4)) % 4
+        i += offsetToAdd
+        curNumberOfBit = 0
+        step = 'READ_V'
+    } else if (step === 'READ_OPERATOR') {
+        
     }
 }
 
+console.log(sumOfVersion)
