@@ -1,4 +1,4 @@
-const input = require('./input/input_test2')
+const input = require('./input/input_20211216')
 
 // Reformattage
 const hexaObj = {
@@ -17,40 +17,60 @@ const fromBinToDec = x => x.split('').reduce((acc,y) => (acc * 2) + parseInt(y),
 // 1
 
 const getVersionsOfPacket = (packet) => {
-    const INPUT_LENGTH = newInput.length
+    const INPUT_LENGTH = packet.length
     let sumOfVersion = 0
-    let version = 
-}
-while (i < INPUT_LENGTH) {
-    if (step === 'READ_V') {
-        let curVersion = newInput.slice(i, i+3).join('')
-        i += 3
-        sumOfVersion += fromBinToDec(curVersion)
-        step = 'READ_T'
-        curNumberOfBit+=3
-    } else if (step === 'READ_T') {
-        let curType = newInput.slice(i, i+3).join('')
-        i += 3
-        curType = fromBinToDec(curType)
-        curNumberOfBit+=3
-        if (curType === 4) {
-            step = 'READ_LITTERAL'
-        } else {
-            step = 'READ_OPERATOR'
+    let step = 'READ_V'
+    let i = 0
+    while (i < INPUT_LENGTH) {
+        if (step === 'READ_V') {
+            let curVersion = packet.slice(i, i+3).join('')
+            i += 3
+            const version = fromBinToDec(curVersion)
+            sumOfVersion += version
+            step = 'READ_T'
+        } else if (step === 'READ_T') {
+            let curType = packet.slice(i, i+3).join('')
+            i += 3
+            curType = fromBinToDec(curType)
+            if (curType === 4) {
+                step = 'READ_LITTERAL'
+            } else {
+                step = 'READ_OPERATOR'
+            }
+            
+        } else if (step === 'READ_LITTERAL') {
+            let litteral = packet.slice(i, i+5)
+            while (litteral[0] === '1') {
+               i +=5
+               litteral = packet.slice(i, i+5)
+            }
+            i +=5
+            if (INPUT_LENGTH - i < 4) {
+                i += 5
+            } else {
+                step = 'READ_V'
+            }   
+        } else if (step === 'READ_OPERATOR') {
+            const lengthID = packet[i]
+            i += 1
+            if (lengthID === '0') {
+                let subPacketLength = packet.slice(i,i+15).join('')
+                i += 15
+                subPacketLength = fromBinToDec(subPacketLength)
+                let curSumOfVersion = getVersionsOfPacket(packet.slice(i,i+subPacketLength))
+                i += subPacketLength
+                sumOfVersion += curSumOfVersion
+                step = 'READ_V'
+            } else if (lengthID === '1') {
+                i += 11
+                step = 'READ_V'
+            }
         }
-        
-    } else if (step === 'READ_LITTERAL') {
-        let litteral = newInput.slice(i, i+5)
-        while (litteral[0] === '1') {
-           i +=5
-           litteral = newInput.slice(i, i+5)
-           curNumberOfBit+=5
-        }
-        i +=5
-        step = 'READ_V'
-    } else if (step === 'READ_OPERATOR') {
-        
     }
+    return sumOfVersion
 }
 
-console.log(sumOfVersion)
+const sumOfVersion = getVersionsOfPacket(newInput)
+
+
+console.log(`1st question's answer : ${sumOfVersion}`)
