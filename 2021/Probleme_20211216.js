@@ -124,7 +124,7 @@ const getResultsOfPacket = (packet,curIndex,numberOfLitteralToFind=0) => {
                 subPacketLength = fromBinToDec(subPacketLength)
                 const [curLitteral,newIndex] = getResultsOfPacket(packet.slice(i,i+subPacketLength),0,0)
                 litterals = curLitteral
-                i += newIndex
+                i += subPacketLength
             } else if (lengthID === '1') {
                 const numOfSubPacket = packet.slice(i,i+11).join('')
                 const numOfSubPacketDec = fromBinToDec(numOfSubPacket)
