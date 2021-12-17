@@ -92,7 +92,6 @@ const getResultsOfPacket = (packet,curIndex,numberOfLitteralToFind=0) => {
             let curType = packet.slice(i, i+3).join('')
             i += 3
             curType = fromBinToDec(curType)
-            console.log(`type : ${curType}`)
             if (curType === 4) {
                 step = 'READ_LITTERAL'
             } else {
@@ -108,11 +107,11 @@ const getResultsOfPacket = (packet,curIndex,numberOfLitteralToFind=0) => {
                litteral = packet.slice(i, i+5)
                num += packet.slice(i+1,i+5).join('')
             }
-            i += 5
             num = fromBinToDec(num)
             allLiteralToFind.push(num)
-            if (numberOfLitteralToFind && allLiteralToFind.length === numberOfLitteralToFind) {
-                return [allLiteralToFind,i]
+            i += 5
+            if (allLiteralToFind.length === numberOfLitteralToFind) {
+                return [allLiteralToFind, i]
             }
             step = 'READ_V'   
         } else if (step === 'READ_OPERATOR') {
@@ -125,7 +124,7 @@ const getResultsOfPacket = (packet,curIndex,numberOfLitteralToFind=0) => {
                 subPacketLength = fromBinToDec(subPacketLength)
                 const [curLitteral,newIndex] = getResultsOfPacket(packet.slice(i,i+subPacketLength),0,0)
                 litterals = curLitteral
-                i += subPacketLength
+                i += newIndex
             } else if (lengthID === '1') {
                 const numOfSubPacket = packet.slice(i,i+11).join('')
                 const numOfSubPacketDec = fromBinToDec(numOfSubPacket)
@@ -148,15 +147,22 @@ const getResultsOfPacket = (packet,curIndex,numberOfLitteralToFind=0) => {
                 allLiteralToFind.push(litterals[0] < litterals[1] ? 1 : 0)
             } else if (curOperator === 7) {
                 allLiteralToFind.push(litterals[0] === litterals[1] ? 1 : 0)
-            } 
+            }
+
+            if (allLiteralToFind.length === numberOfLitteralToFind) {
+                return [allLiteralToFind, i]
+            }
+
             
             step = 'READ_V'
+            curOperator = ''
         }
     }
-    return [allLiteralToFind,i]
+    return [allLiteralToFind,INPUT_LENGTH]
 }
 
 const res = getResultsOfPacket(newInput,0,0)
 
 console.log(`2nd question's answer : ${res[0][0]}`)
+
 
