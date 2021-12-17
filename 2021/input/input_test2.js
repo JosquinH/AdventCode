@@ -1,3 +1,8 @@
-const input = "9C0141080250320F1802104A08"
+const input = {
+    xmin: 20,
+    xmax: 30,
+    ymin: -10,
+    ymax: -5
+}
 
 module.exports = input
