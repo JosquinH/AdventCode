@@ -7,7 +7,7 @@ const ehancementStringTable = ehancementString.split('')
 let dotString = ''
 let j = 0
 
-while(j < ORIGINAL_IMAGE_WIDTH + 2 * (NUMBER_OF_STEP + 1)) {
+while(j < ORIGINAL_IMAGE_WIDTH + 2 * (NUMBER_OF_STEP + 2)) {
     dotString += '.'
     ++j
 }
@@ -22,21 +22,21 @@ const borderPointAfterOneIt = ehancementStringTable[0]
 const newImage = []
 
 // Haut DE l'image
-for (let i = 0; i < NUMBER_OF_STEP + 1; ++ i) {
+for (let i = 0; i < NUMBER_OF_STEP + 2; ++ i) {
     newImage.push(dotString.split(''))
 } 
 
 // Image
-for (let i = 0; i < ORIGINAL_IMAGE_HEIGHT; ++ i) {
+for (let i = 0; i < ORIGINAL_IMAGE_HEIGHT + 2; ++ i) {
     const curLine = dotString.split('')
     const curLineImage =  image[i]
-    const finalLine = (curLine.slice(0,NUMBER_OF_STEP + 1).join('') + curLineImage + curLine.slice(0,NUMBER_OF_STEP + 1).join('')).split('')
+    const finalLine = (curLine.slice(0,NUMBER_OF_STEP + 2).join('') + curLineImage + curLine.slice(0,NUMBER_OF_STEP + 2).join('')).split('')
     newImage.push(finalLine)
 }
 
 // Bas de l'image
 
-for (let i = 0; i < NUMBER_OF_STEP + 1; ++ i) {
+for (let i = 0; i < NUMBER_OF_STEP + 2; ++ i) {
     newImage.push(dotString.split(''))
 }
 
@@ -46,11 +46,11 @@ for (const line of newImage) {
 
 console.log('\n')
 
-const newImageStartHeight = NUMBER_OF_STEP + 1
-const newImageEndHeight = NUMBER_OF_STEP + 1 + ORIGINAL_IMAGE_HEIGHT
+const newImageStartHeight = NUMBER_OF_STEP + 2
+const newImageEndHeight = NUMBER_OF_STEP + 2 + ORIGINAL_IMAGE_HEIGHT
 
-const newImageStartWidth = NUMBER_OF_STEP + 1
-const newImageEndWidth = NUMBER_OF_STEP + 1 + ORIGINAL_IMAGE_WIDTH
+const newImageStartWidth = NUMBER_OF_STEP + 2
+const newImageEndWidth = NUMBER_OF_STEP + 2 + ORIGINAL_IMAGE_WIDTH
 
 // 1
 
@@ -58,19 +58,21 @@ for (let step = 1; step <= NUMBER_OF_STEP; ++step) {
     // On créer la nouvelle image courrante
     const newCurImage = []
     let curBorderPoint = step % 2 === 1 ? borderPointStart : borderPointAfterOneIt
+
     for (let i = newImageStartHeight - step; i < newImageEndHeight + step; ++i ) {
         const curLine = []
+        
         for (let j = newImageStartWidth - step; j < newImageEndWidth + step; ++j ) {
             let str = '' 
-            str += ( i === newImageStartHeight - step || j === newImageStartWidth - step) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i-1][j-1] === '#' ? '1' : '0'
-            str += ( i === newImageStartHeight - step ) ? (curBorderPoint === '#' ? '1' : '0') :newImage[i-1][j] === '#' ? '1' : '0'
-            str += ( i === newImageStartHeight - step || j ===  newImageEndWidth + step - 1) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i-1][j + 1] === '#' ? '1' : '0'
-            str += (j === newImageStartWidth - step) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i][j - 1] === '#' ? '1' : '0'
+            str += newImage[i-1][j-1] === '#' ? '1' : '0'
+            str += newImage[i-1][j] === '#' ? '1' : '0'
+            str += newImage[i-1][j + 1] === '#' ? '1' : '0'
+            str += newImage[i][j - 1] === '#' ? '1' : '0'
             str += newImage[i][j] === '#' ? '1' : '0'
-            str += (j ===  newImageEndWidth + step - 1) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i][j+1] === '#' ? '1' : '0'
-            str += ( i === newImageEndHeight + step - 1 || j === newImageStartWidth - step) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i + 1][j - 1] === '#' ? '1' : '0'
-            str += ( i === newImageEndHeight + step - 1) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i + 1][j] === '#' ? '1' : '0'
-            str += ( i === newImageEndHeight + step - 1 || j ===  newImageEndWidth + step - 1) ? (curBorderPoint === '#' ? '1' : '0') : newImage[i + 1][j+1] === '#' ? '1' : '0'
+            str += newImage[i][j+1] === '#' ? '1' : '0'
+            str += newImage[i + 1][j - 1] === '#' ? '1' : '0'
+            str += newImage[i + 1][j] === '#' ? '1' : '0'
+            str += newImage[i + 1][j+1] === '#' ? '1' : '0'
             const curIndex = fromBinToDec(str)
             curLine.push(ehancementStringTable[curIndex])
             /* for (let k = i - 1; k <= i + 1 ; ++k) {
@@ -87,6 +89,26 @@ for (let step = 1; step <= NUMBER_OF_STEP; ++step) {
         for (let j = newImageStartWidth - step; j < newImageEndWidth + step; ++j ) {
             newImage[i][j] = newCurImage[i - newImageStartHeight + step][j - newImageStartWidth + step]
         }
+    }
+
+    for (let i = 0; i < newImageStarHeight - 2 * step; ++i) {
+        for (let j = newImageStartWidth - 2 * step; j < newImageEndWidth + 2 * step; ++j) {
+            newImage[i][j] = curBorderPoint
+            newImage[i][j] = curBorderPoint
+        }
+    }
+    
+
+    for (let i = newImageStartHeight  - 2 * step; i < newImageEndHeight + 2 * step; ++i) {
+        newImage[i][newImageStartWidth - step - 1] = curBorderPoint
+        newImage[i][newImageStartWidth - step] = curBorderPoint
+        newImage[i][newImageEndWidth + step] = curBorderPoint
+        newImage[i][newImageEndWidth + step + 1] = curBorderPoint
+    } 
+
+    for (let j = newImageStartWidth - step - 1; j < newImageEndWidth + step + 1; ++j) {
+        newImage[newImageEndHeight + step][j] = curBorderPoint
+        newImage[newImageEndHeight + step + 1][j] = curBorderPoint
     }
 
     for (const l of newImage) {
