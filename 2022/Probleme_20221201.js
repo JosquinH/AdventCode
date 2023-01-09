@@ -1,27 +1,21 @@
-const input = require('./input/input_20211201')
+const input = require('./input/input_20221201')
 
 // 1
 
-let nbIncrease = 0
+let max = 0
 
-for (let i = 1; i < input.length; ++i) {
-    if (input[i] - input[i-1] > 0) {
-        ++ nbIncrease
+for (let elf of input) {
+    let totalCalories = elf.reduce((acc,x) => acc + x,0)
+    if (totalCalories > max) {
+        max = totalCalories
     }
 }
 
-console.log(`1st question's answer : ${nbIncrease}`)
+console.log(`1st question's answer : ${max}`)
 
 // 2
 
-let nbIncrease2 = 0
+let caloriesElf = input.map(cal => cal.reduce((acc,x) => acc + x,0))
+caloriesElf.sort((a,b) => b - a)
 
-for (let i = 1; i < input.length - 2; ++i) {
-    const baseSum = input[i] + input[i+1]
-
-    if ((baseSum + input[i + 2]) - (baseSum + input[i - 1]) > 0) {
-        ++ nbIncrease2
-    }
-}
-
-console.log(`2nd question's answer : ${nbIncrease2}`)
+console.log(`2nde question's answer : ${caloriesElf[0] + caloriesElf[1] + caloriesElf[2]}`)
