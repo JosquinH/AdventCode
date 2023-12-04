@@ -7,3 +7,5 @@ Mes codes pour adventCode https://adventofcode.com/
 
 **2021** : 20*
 
+**2022** : 16 *
+
