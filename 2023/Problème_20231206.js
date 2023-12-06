@@ -23,7 +23,7 @@ while ((d = distancesIt.next()).value !== undefined) {
 }
 
 /**
- * Le problème à résoudre est (time - x) * x > distance où x est le temps où l'on appuie sur le bouton
+ * Le problème à résoudre est de trouver x telque : (time - x) * x > distance, où x est le temps où l'on appuie sur le bouton
  * Cela se rammène à -(x**2) + time*x - distance > 0
  */
 

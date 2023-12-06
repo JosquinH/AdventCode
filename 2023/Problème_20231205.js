@@ -42,7 +42,8 @@ console.log(`Solution Problème 1 : ${res}`)
 
 // Problème 2
 
-let ancientRangeSet = []
+const ancientRangeSet = []
+
 let newRangeSet = []
 
 for (let i = 0; i < seeds.length; i+=2) {
@@ -61,7 +62,7 @@ for (const line of input) {
             const interval = ancientRangeSet.shift()       
             const intervalMin = Math.max(interval[0], sourceStart)
             const intervalMax = Math.min(interval[1],sourceEnd)
-            if (intervalMax - intervalMin >= 0) {
+            if (intervalMax >= intervalMin) {
                 newRangeSet.push([destinationStart + intervalMin - sourceStart,destinationStart + intervalMax - sourceStart])
                 if (interval[0] < sourceStart) {
                     newInterval.push([interval[0],sourceStart - 1])
@@ -73,7 +74,7 @@ for (const line of input) {
                 newInterval.push(interval)
             }         
         }
-        ancientRangeSet = [...newInterval]
+        ancientRangeSet.push(...newInterval)
     }
 }
 
