@@ -15,7 +15,6 @@ for (const line of input) {
     games.push(gameSet)
 }
 
-console.log(games[0])
 /**
  * Problème 1
  */
