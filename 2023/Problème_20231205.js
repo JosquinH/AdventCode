@@ -73,7 +73,7 @@ for (const line of input) {
                 newInterval.push(interval)
             }         
         }
-        ancientRangeSet = [...newInterval]     
+        ancientRangeSet = [...newInterval]
     }
 }
 

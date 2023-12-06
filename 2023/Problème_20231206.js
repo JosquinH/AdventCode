@@ -15,12 +15,37 @@ while (!t.done) {
 }
 
 // Récupération distances
+
 const distances = []
 const distancesIt = input[1].matchAll(reg)
 let d = distancesIt.next()
+
 while (!d.done) {
     distances.push(parseInt(d.value))
     d = distancesIt.next()
+}
+
+/**
+ * Le problème à résoudre est (time - x) * x > distance où x est le temps où l'on appuie sur le bouton
+ * Cela se rammène à -(x**2) + time * x - distance > 0
+ * 
+ */
+
+const getInterval = (time,distance) => {
+    const delta = (time ** 2) - (4*distance)
+    const x1 = Math.ceil(((-1 * time) + Math.sqrt(delta)) / -2)
+    const x2 = Math.floor(((-1 * time) - Math.sqrt(delta)) / -2)
+    let res = x2 - x1 + 1
+
+    if ((time - x1) * x1 === distance) {
+        --res
+    }
+
+    if ((time - x2) * x2 === distance) {
+        --res
+    }
+
+    return res
 }
 
 // Problème 1
@@ -28,31 +53,13 @@ while (!d.done) {
 let total = 1
 
 for (let i = 0; i < times.length; ++i) {
-    const time = times[i]
-    const distance = distances[i]
-    let curTotal = 0
-    for (let j = 1; j < time; ++j) {
-        if (j + Math.floor(distance/j) < time) {
-            curTotal += 1
-        }
-    }
-    total *= curTotal
+    total *= getInterval(times[i],distances[i])
 }
 
 console.log(`Solution Problème 1 : ${total}`)
 
 // Problème 2
 
-const time1 = parseInt(times.join(''))
-const distance1 = parseInt(distances.join(''))
-
-let total1 = 0
-for (let j = 1; j < time1; ++j) {
-    if (j + Math.floor(distance1/j) < time1) {
-        total1 += 1
-    }
-}
+const total1 = getInterval(parseInt(times.join('')),parseInt(distances.join('')))
 
 console.log(`Solution Problème 2 : ${total1}`)
-
-
