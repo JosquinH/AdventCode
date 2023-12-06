@@ -30,7 +30,7 @@ while (!d.done) {
  * Cela se rammène à -(x**2) + time * x - distance > 0
  */
 
-const getInterval = (time,distance) => {
+const getNumberOfSolutions = (time,distance) => {
     const a = -1
     const b = time
     const c = -distance
@@ -47,12 +47,12 @@ const getInterval = (time,distance) => {
 
 // Problème 1
 
-const total = times.reduce((acc,x,idx) => acc * getInterval(x,distances[idx]), 1)
+const total = times.reduce((acc,x,idx) => acc * getNumberOfSolutions(x,distances[idx]), 1)
 
 console.log(`Solution Problème 1 : ${total}`)
 
 // Problème 2
 
-const total1 = getInterval(parseInt(times.join('')),parseInt(distances.join('')))
+const total1 = getNumberOfSolutions(parseInt(times.join('')),parseInt(distances.join('')))
 
 console.log(`Solution Problème 2 : ${total1}`)
