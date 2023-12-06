@@ -22,7 +22,6 @@ while ((d = distancesIt.next()).value !== undefined) {
     distances.push(parseInt(d.value))
 }
 
-console.log(distances)
 /**
  * Le problème à résoudre est (time - x) * x > distance où x est le temps où l'on appuie sur le bouton
  * Cela se rammène à -(x**2) + time*x - distance > 0
