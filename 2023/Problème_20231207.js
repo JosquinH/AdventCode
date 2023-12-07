@@ -60,7 +60,7 @@ for (const handBet of input) {
     
     // Partie Problème 1
 
-    const handCardNumber1 = Object.keys(handObj).map(x => handObj[x]).sort((a,b) => b - a).filter(x => x > 1)
+    const handCardNumber1 = Object.values(handObj).filter(x => x > 1).sort((a,b) => b - a).filter(x => x > 1)
 
     const handNumber1 = parseInt(handCard.map(x => cardHexa[x]).join(''),16)
 
@@ -72,11 +72,11 @@ for (const handBet of input) {
 
     if (jokerNumber !== undefined && jokerNumber !== 5) {
         handObj['J'] = 0
-        const maxKey = Object.keys(handObj).map(x => ({key: x, value: handObj[x] })).sort((a,b) => b.value - a.value)[0].key
+        const maxKey = Object.entries(handObj).sort((a,b) => b[1] - a[1])[0][0]
         handObj[maxKey] = handObj[maxKey] + jokerNumber
     }
 
-    const handCardNumber2 = Object.keys(handObj).map(x => handObj[x]).sort((a,b) => b - a).filter(x => x > 1)
+    const handCardNumber2 = Object.values(handObj).filter(x => x > 1).sort((a,b) => b - a).filter(x => x > 1)
     const handNumber2 = parseInt(handCard.map(x => cardHexa2[x]).join(''),16)
 
     handTable2.push({handPower:getPower(handCardNumber2),handNumber: handNumber2,bet})
