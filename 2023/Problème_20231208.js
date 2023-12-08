@@ -60,6 +60,7 @@ while(currentNodes.length > 0) {
 }
 
 /**
+ * Comme toute les valeurs de stepTable sont divisible par pathRL.length, 
  * La solution est le PPCM de toute les valeurs de stepTable
  * PPCM(a,b) = (a*b) / PGCD(a,b)
  * */ 
@@ -76,6 +77,8 @@ const PGCD = (a,b) => {
 
     return a1
 }
+
+console.log(stepTable)
 
 while (stepTable.length !== 1) {
     const a = stepTable.pop()
