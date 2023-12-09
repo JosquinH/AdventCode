@@ -60,6 +60,7 @@ while(currentNodes.length > 0) {
 }
 
 /**
+ * Comme toute les valeurs de stepTable sont divisible par pathRL.length, et l'on retourne de ..Z à ..A
  * La solution est le PPCM de toute les valeurs de stepTable
  * PPCM(a,b) = (a*b) / PGCD(a,b)
  * */ 
