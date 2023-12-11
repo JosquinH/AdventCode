@@ -1,11 +1,9 @@
 const fs = require('fs');
 const filename = "input/input_20231211.txt"
-
 let input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split(''))
 
 let colonneToExpand = input[0].map(x => true)
 const lineToExpand = []
-
 const galaxyIdx = []
 
 for (let i = 0; i < input.length; ++i) {
@@ -32,7 +30,7 @@ colonneToExpand = colonneToExpand.reduce((acc,x,idx) => {
 const computeNewCoord = ([i,j],coeff) => {
     const nbMultipleLine = lineToExpand.filter(x => x < i).length
     const nbMultipleColumn = colonneToExpand.filter(x => x < j).length
-    return [i + nbMultipleLine * coeff - nbMultipleLine, j + nbMultipleColumn * coeff - nbMultipleColumn]
+    return [i + nbMultipleLine * (coeff - 1), j + nbMultipleColumn * (coeff - 1)]
 }
 
 const computeTotalDistance = (galaxyIdx) => {
