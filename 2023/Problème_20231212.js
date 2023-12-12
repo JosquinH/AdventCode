@@ -1,93 +1,72 @@
 const fs = require('fs');
 const filename = "input/input_20231212.txt"
-// input_20231212.txt
 const input = fs.readFileSync(filename, 'utf8').split('\r\n')
 
-const reg =/#+/g
-// Calcul les combinaisons possibles d'indice du type 3 parmis p
+const cache = {}
 
-const combinaison = (p,n) => {
-    const liste_combinaison = []
-    const indices = []
-    for (let i = 0; i < p; ++ i) {
-        indices.push(i)
-    }
-    liste_combinaison.push([...indices])
-    if (p === n) {
-        return liste_combinaison
-    }
-    let i = p - 1
-    while (i !== -1) {
-        indices[i] += 1
-        for (let j = i+1; j < p; ++j) {
-            indices[j] = indices[j - 1] + 1
+const countNumberOfConf = (springs, indexDamaged) => {
+    const key = `${springs};${indexDamaged.join(',')}`
+    if (cache[key] === undefined){
+        if (springs.length === 0) {
+            if (indexDamaged.length === 0) {
+                cache[key] = 1
+                return 1
+            } else {
+                cache[key] = 0
+                return 0
+            }
         }
-        if (indices[i] === (n  - p + i)) {
-            --i
-        } else {
-            i = p - 1
+    
+        if (indexDamaged.length === 0) {
+            if (springs.search(/#/) === -1) {
+                cache[key] = 1
+                return 1
+            } else {
+                cache[key] = 0
+                return 0
+            }
         }
-        liste_combinaison.push([...indices])
-    }
-    return liste_combinaison
-}
+    
+        let total = 0
+    
+        if (springs.charAt(0) === '.' || springs.charAt(0) === '?') {
+            total += countNumberOfConf(springs.slice(1),indexDamaged)
+        }
+    
+        if (springs.charAt(0) === '#' || springs.charAt(0) === '?') {
+            if (indexDamaged[0] <= springs.length && springs.slice(0,indexDamaged[0]).search(/\./) === -1 && (indexDamaged[0] === springs.length || springs.charAt(indexDamaged[0]) !== '#')) {
+                total += countNumberOfConf(springs.slice(indexDamaged[0] + 1), indexDamaged.slice(1))
+            }
+        }
 
-// Indique si un spring est valide
-
-const isValidSpring = (spring,indexDamaged) => {
-    let index = 0
-    const springDamagedIt = spring.matchAll(reg)
-    let s = springDamagedIt.next()
-    while (s.value !== undefined && index < indexDamaged.length) {
-        if (s.value[0].length !== indexDamaged[index]) {
-            return false
-        }
-        index += 1
-        s = springDamagedIt.next()
+        cache[key] = total
+        return total
+    } else {
+        return cache[key]
     }
-    if (s.value !== undefined || index !== indexDamaged.length) {
-        return false
-    }
-    return true
 }
 
 // Problème 1
 
-let numberOfCombinaison = 0
-let k = 0
+let total = 0
 for (const line of input) {
-    if (k % 100 === 0) {
-        console.log(`${k+1}/${input.length}`)
-    }
-    k += 1
-    // Traitement de la ligne
     let [springs,indexDamaged] = line.split(' ')
     indexDamaged = indexDamaged.split(',').map(x => parseInt(x))
-    const totalNumberOfDamagedSprings = indexDamaged.reduce((acc,x) => acc +x,0)
-    springs = springs.split('')
-
-    // Récupération des index des cases inconnus et du nombre de #
-    const interogationSpringIndex = []
-    let numberOfDamagedSpring = 0
-    for (let i = 0; i < springs.length; ++ i) {
-        if (springs[i] === '?') {
-            interogationSpringIndex.push(i)
-        } else if (springs[i] === '#') {
-            numberOfDamagedSpring += 1
-        }
-    }
-
-    // Test combinaison
-    const allCombinaison = combinaison(totalNumberOfDamagedSprings-numberOfDamagedSpring,interogationSpringIndex.length)
-    for (const currentCombinaison of allCombinaison) {
-        const newSprings = [...springs]
-        for (let i = 0; i < currentCombinaison.length; ++i) {
-            newSprings[interogationSpringIndex[currentCombinaison[i]]] = '#'
-        }
-        if (isValidSpring(newSprings.join(''),indexDamaged)) {
-            numberOfCombinaison += 1
-        }
-    }   
+    total += countNumberOfConf(springs,indexDamaged)
 }
 
-console.log(`Solution Problème 1 : ${numberOfCombinaison}`)
+console.log(`Solution Problème 1 : ${total}`)
+
+// Problème 2
+
+let total1 = 0
+
+for (const line of input) {
+    let [springs,indexDamaged] = line.split(' ')
+    springs = springs + '?' + springs + '?' + springs + '?' + springs + '?' + springs
+    indexDamaged = indexDamaged + ',' + indexDamaged + ',' + indexDamaged + ',' + indexDamaged + ',' + indexDamaged
+    indexDamaged = indexDamaged.split(',').map(x => parseInt(x))
+    total1 += countNumberOfConf(springs,indexDamaged)
+}
+
+console.log(`Solution Problème 2 : ${total1}`)
