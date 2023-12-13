@@ -78,10 +78,17 @@ for (const line of input) {
                 verticalLineTable[j][i] = char
                 score = computeMirrorCoord(horizontalLineTable,verticalLineTable.map(x => x.join('')))
                 if (score > 0) { 
-                    if (score < 100) {
-                        console.log(i,j)
+                    if (score < 100 && ((2 * score <= verticalLineTable.length && j <= 2*score) || (2 * score > verticalLineTable.length && j > 2 * score - verticalLineTable.length))) {
+                        console.log('v',i,j)
                         total += score
                         break
+                    } else if(score > 100){
+                        let newScore = score / 100
+                        if (((2 * newScore <= horizontalLineTable.length && i <= 2*newScore) || (2 * newScore > horizontalLineTable.length && i >= 2 * newScore - horizontalLineTable.length))) {
+                            console.log('h',i,j)
+                            total += score
+                            break
+                        }
                     } else {
                         score = 0
                     }
