@@ -1,9 +1,9 @@
 const fs = require('fs');
-const filename = "input/test.txt"
+const filename = "input/input_20231213.txt"
 const input = fs.readFileSync(filename, 'utf8').split('\r\n')
 input.push('')
 
-const findIndexMirror = (table,coeff) => {
+const findIndexMirror = (table,coeff,precScore) => {
     for (let i = 1; i < table.length;++i) {
         let mirror = true
         for (let j = 1; j <= i ;++j) {
@@ -14,20 +14,20 @@ const findIndexMirror = (table,coeff) => {
             }         
         }
         if (mirror) {
-            //console.log(i)
-            //console.log(table.join('\n'))
-            //console.log('\n')
-            return i*coeff
+            if ((precScore !== null && i*coeff !== precScore) || precScore === null) {
+                return i*coeff
+            }
         }
     }
     return 0
 }
-const computeMirrorCoord = (horizontalLineTable,verticalLineTable) => {
-    const score = findIndexMirror(horizontalLineTable,100)
+
+const computeMirrorCoord = (horizontalLineTable,verticalLineTable,precScore) => {
+    const score = findIndexMirror(horizontalLineTable,100,precScore)
     if (score > 0) {
         return score
     } else {
-        return findIndexMirror(verticalLineTable,1)
+        return findIndexMirror(verticalLineTable,1,precScore)
     }   
 }
 
@@ -39,9 +39,13 @@ let total = 0
 let horizontalLineTable = []
 let verticalLineTable = []
 
+const scoreTable = []
+
 for (const line of input) {
     if (line === '') {
-        total += computeMirrorCoord(horizontalLineTable,verticalLineTable.map(x => x.join('')))
+        const score = computeMirrorCoord(horizontalLineTable,verticalLineTable.map(x => x.join('')),null)
+        total += score
+        scoreTable.push(score)
         horizontalLineTable = []
         verticalLineTable = []
     } else {
@@ -67,6 +71,7 @@ verticalLineTable = []
 
 for (const line of input) {
     if (line === '') {
+        const currentScore = scoreTable.shift()
         let score = 0
         for (let i = 0; i < horizontalLineTable.length; ++i) {
             for(let j = 0; j < verticalLineTable.length; ++j) {
@@ -76,29 +81,16 @@ for (const line of input) {
                 const stringAfterChar = horizontalLineTable[i].slice(j+1)
                 horizontalLineTable[i] = stringBeforeChar + char +  stringAfterChar
                 verticalLineTable[j][i] = char
-                score = computeMirrorCoord(horizontalLineTable,verticalLineTable.map(x => x.join('')))
-                if (score > 0) { 
-                    if (score < 100 && ((2 * score <= verticalLineTable.length && j <= 2*score) || (2 * score > verticalLineTable.length && j > 2 * score - verticalLineTable.length))) {
-                        console.log('v',i,j)
-                        total += score
-                        break
-                    } else if(score > 100){
-                        let newScore = score / 100
-                        if (((2 * newScore <= horizontalLineTable.length && i <= 2*newScore) || (2 * newScore > horizontalLineTable.length && i >= 2 * newScore - horizontalLineTable.length))) {
-                            console.log('h',i,j)
-                            total += score
-                            break
-                        }
-                    } else {
-                        score = 0
-                    }
-                } else {
-                    horizontalLineTable[i] = stringBeforeChar + precChar +  stringAfterChar
-                    verticalLineTable[j][i] = char
-                }
+                score = computeMirrorCoord(horizontalLineTable,verticalLineTable.map(x => x.join('')),currentScore)
+                if (score > 0) {
+                    total += score
+                    break   
+                }                
+                horizontalLineTable[i] = stringBeforeChar + precChar +  stringAfterChar
+                verticalLineTable[j][i] = precChar
             }
             if (score > 0) {
-                break   
+                break
             }
         }
         horizontalLineTable = []
