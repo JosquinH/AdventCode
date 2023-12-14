@@ -2,75 +2,53 @@ const fs = require('fs');
 const filename = "input/input_20231214.txt"
 let input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split(''))
 
-let inputSave = input.map(x => [...x])
+const inputSave = input.map(x => [...x])
 
-const computeNewCoordNorth = (i,j) => {
-    if (i=== 0) {
-        return [i,j]
-    } else {
-        let k = i
-        while (k > 0 && input[k - 1][j] === '.') {
-            --k
+const WIDTH = input[0].length
+const HEIGHT = input.length
+
+// Bouge le rocher aux coordonnées [i,j] dans la direction "direction" (n,w,s,e)
+
+const moveRock = (i,j,direction) => {
+    const [ancient_i,ancient_j] = [i,j]
+    if (i > 0 && direction === 'n') {
+        while (i > 0 && input[i - 1][j] === '.') {
+            --i
         }
-        return [k,j]
+    } else if (j > 0 && direction === 'w') {
+        while (j > 0 && input[i][j-1] === '.') {
+            --j
+        }
+    } else if (i < HEIGHT - 1 && direction === 's') {
+        while (i < HEIGHT - 1 && input[i+ 1][j] === '.') {
+            ++i
+        }
+    } else if (j < WIDTH - 1 && direction === 'e') {
+        while (j < WIDTH - 1 && input[i][j+1] === '.') {
+            ++j
+        }
     }
+    input[ancient_i][ancient_j] = '.'
+    input[i][j] = 'O'
 }
 
-const computeNewCoordWest = (i,j) => {
-    if (j=== 0) {
-        return [i,j]
-    } else {
-        let k = j
-        while (k > 0 && input[i][k-1] === '.') {
-            --k
-        }
-        return [i,k]
-    }
-}
+// Bouge l'ensemble des rochers dans la direction "direction"
 
-const computeNewCoordEast = (i,j) => {
-    if (j=== input[i].length - 1) {
-        return [i,j]
-    } else {
-        let k = j
-        while (k < input[i].length - 1 && input[i][k+1] === '.') {
-            ++k
-        }
-        return [i,k]
-    }
-}
-
-const computeNewCoordSouth = (i,j) => {
-    if (i=== input.length - 1) {
-        return [i,j]
-    } else {
-        let k = i
-        while (k  < input.length - 1 && input[k + 1][j] === '.') {
-            ++k
-        }
-        return [k,j]
-    }
-}
-
-const moveRockNorthOrWest = (computeNewCoord) => {
-    for (let i = 0; i < input.length; ++i) {
-        for (let j = 0; j < input[i].length; ++j) {
-            if (input[i][j] === 'O') {
-                const newCoord = computeNewCoord(i,j)
-                input[i][j] = '.'
-                input[newCoord[0]][newCoord[1]] = 'O'
+const moveRocks = (direction) => {
+    if (direction === 'n' || direction === 'w') {
+        for (let i = 0; i < HEIGHT; ++i) {
+            for (let j = 0; j < WIDTH; ++j) {
+                if (input[i][j] === 'O') {
+                    moveRock(i,j,direction)
+                }
             }
         }
-    }
-}
-
-const moveRockSouthOrEast = (computeNewCoord) => {
-    for (let i = input.length - 1; i >= 0; --i) {
-        for (let j = input[i].length - 1; j >= 0; --j) {
-            if (input[i][j] === 'O') {
-                const newCoord = computeNewCoord(i,j)
-                input[i][j] = '.'
-                input[newCoord[0]][newCoord[1]] = 'O'
+    } else {
+        for (let i = HEIGHT - 1; i >= 0; --i) {
+            for (let j = WIDTH - 1; j >= 0; --j) {
+                if (input[i][j] === 'O') {
+                    moveRock(i,j,direction)
+                }
             }
         }
     }
@@ -78,12 +56,9 @@ const moveRockSouthOrEast = (computeNewCoord) => {
 
 // Problème 1
 
-moveRockNorthOrWest(computeNewCoordNorth)
+moveRocks('n')
 
-const total = input.reduce((acc,line,index,tab) => {
-    const numberOfRock = line.filter(x => x === 'O').length
-    return acc  + numberOfRock * (tab.length - index)
-},0)
+const total = input.reduce((acc,line,index) => acc  + line.filter(x => x === 'O').length * (HEIGHT - index),0)
 
 console.log(`Solution Problème 1 : ${total}`)
 
@@ -91,19 +66,20 @@ console.log(`Solution Problème 1 : ${total}`)
 
 input = inputSave
 const nbCycle = 1000000000
+const cycleObj = {}
 
 let inputKey = input.map(x => x.join('')).join('')
-const cycleObj = {inputKey: 0}
+cycleObj[inputKey] = 0
 let finalPosition = -1
 let k = 0
 
 while (finalPosition === -1 && k < nbCycle){
-    moveRockNorthOrWest(computeNewCoordNorth)
-    moveRockNorthOrWest(computeNewCoordWest)
-    moveRockSouthOrEast(computeNewCoordSouth)
-    moveRockSouthOrEast(computeNewCoordEast)
+    moveRocks('n')
+    moveRocks('w')
+    moveRocks('s')
+    moveRocks('e')
+    k += 1
     inputKey = input.map(x => x.join('')).join('')
-    ++k
     if (cycleObj[inputKey] === undefined) {
         cycleObj[inputKey] = k
     } else {
@@ -113,15 +89,11 @@ while (finalPosition === -1 && k < nbCycle){
 }
 
 const finalInput = Object.keys(cycleObj).find(key => cycleObj[key] === finalPosition)
-const finalInputLines = []
-const width = input[0].length
-for (let i = 0; i < (finalInput.length/width); ++i) {
-    finalInputLines.push(finalInput.slice(i*width,i*width + width))
-}
 
-const total1 = finalInputLines.reduce((acc,line,index,tab) => {
-    const numberOfRock = line.split('').filter(x => x === 'O').length
-    return acc  + numberOfRock * (tab.length - index)
-},0)
+let total1 = 0
+
+for (let i = 0; i < finalInput.length; i+=WIDTH) {
+    total1 += finalInput.slice(i,i+WIDTH).split('').filter(x => x === 'O').length * (HEIGHT - (i/WIDTH))
+}
 
 console.log(`Solution Problème 2 : ${total1}`)
