@@ -108,7 +108,6 @@ while (finalPosition === -1 && k < nbCycle){
         cycleObj[inputKey] = k
     } else {
         const startIndex = cycleObj[inputKey]
-        repeatCycle = true
         finalPosition = startIndex + ((nbCycle - k) % (k - startIndex))
     }
 }
