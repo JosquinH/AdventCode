@@ -83,8 +83,7 @@ while (finalPosition === -1 && k < nbCycle){
     if (cycleObj[inputKey] === undefined) {
         cycleObj[inputKey] = k
     } else {
-        const startIndex = cycleObj[inputKey]
-        finalPosition = startIndex + ((nbCycle - k) % (k - startIndex))
+        finalPosition = cycleObj[inputKey] + ((nbCycle - k) % (k - cycleObj[inputKey]))
     }
 }
 
