@@ -6,13 +6,7 @@ const computeHash = (s) => s.split('').reduce((acc,c) => (acc + c.charCodeAt(0) 
 
 // Problème 1
 
-let total = 0
-
-for (const sequence of input) {
-    total += computeHash(sequence)
-}
-
-console.log(`Solution Problème 1 : ${total}`)
+console.log(`Solution Problème 1 : ${input.reduce((acc,sequence) => acc + computeHash(sequence),0)}`)
 
 // Problème 2
 
@@ -39,6 +33,6 @@ for (const sequence of input) {
     }
 }
 
-const total1 = Box.reduce((acc,box,boxIdx) => acc += box.reduce((acc1,slot,slotIdx) => acc1 + ((boxIdx + 1) * (slotIdx+1) * slot[1]),0),0)
+const total = Box.reduce((acc,box,boxIdx) => acc += box.reduce((acc1,slot,slotIdx) => acc1 + ((boxIdx + 1) * (slotIdx+1) * slot[1]),0),0)
 
-console.log(`Solution Problème 2 : ${total1}`)
+console.log(`Solution Problème 2 : ${total}`)
