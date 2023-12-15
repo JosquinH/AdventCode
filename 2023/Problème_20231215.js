@@ -2,7 +2,7 @@ const fs = require('fs');
 const filename = "input/input_20231215.txt"
 const input = fs.readFileSync(filename, 'utf8').split(',')
 
-const computeHash = (s) => s.split('').reduce((acc,c) => (acc + c.charCodeAt(0) ) * 17 % 256,0)
+const computeHash = (s) => s.split('').reduce((acc,c) => (acc + c.charCodeAt(0)) * 17 % 256,0)
 
 // Problème 1
 
@@ -17,7 +17,7 @@ for (let i = 0; i < 256; ++i) {
 }
 
 for (const sequence of input) {
-    const symbol = sequence.split('').findIndex(x => x === '=') !== -1 ? '=' : '-'
+    const symbol = sequence.match('=') ? '=' : '-'
     let [label,focal] = sequence.split(symbol)
     boxIdx = computeHash(label)
     focal = parseInt(focal)    
