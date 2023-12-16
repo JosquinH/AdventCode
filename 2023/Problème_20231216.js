@@ -16,9 +16,7 @@ const computeRay = (i,j,direction,alreadyPassObj,energizeObj) => {
     const key = `${energizeKey},${direction}`
     if (alreadyPassObj[key] === undefined) {
         alreadyPassObj[key] = 1
-        if (energizeObj[energizeKey] === undefined) {
-            energizeObj[energizeKey] = 1
-        }
+        energizeObj[energizeKey] = 1
         const newDirections = []
         if (input[i][j] === '.') {
             newDirections.push(direction)
