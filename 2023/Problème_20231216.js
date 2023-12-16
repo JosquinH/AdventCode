@@ -80,4 +80,3 @@ for (let i = 0; i < HEIGHT; ++i) {
 }
 
 console.log(`Solution Problème 2 : ${max}`)
-
