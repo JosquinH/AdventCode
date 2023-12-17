@@ -1,98 +1,97 @@
-const fs = require('fs');
-// const filename = "input/input_20231217.txt"
-const filename = "input/test.txt"
+const fs = require('fs')
+const PriorityQueue = require('priorityqueue/SkewHeap').default
+const filename = "input/input_20231217.txt"
+
 const input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split('').map(y => parseInt(y)))
 
 const HEIGHT = input.length
 const WIDTH = input[0].length
 
-const INFINI = 100000000000
+const tableDirection = [[1,0],[-1,0],[0,1],[0,-1]]
 
-const objDirectionIdx = {'up': [-1,0], 'left': [0,-1], 'down': [1,0], 'right': [0,1]}
-const objOppositeDirection = {'up': 'down', 'left':'right', 'down': 'up' , 'right' : 'left'}
-
-const minSommet = (Q,dijkstraObj) => {
-    let min = INFINI
-    let s = ''
-    for (const sommet of Q) {
-        if (dijkstraObj[sommet] < min) {
-            min = dijkstraObj[sommet]
-            s = sommet
-        }
-    }
-    return s
-}
-
-const getPossibleDirection = (i,j,direction,it) => {
-    let directionTable = []
-    if (i > 0) {
-        directionTable.push(['up',1])
-    }
-    if (i < HEIGHT - 1) {
-        directionTable.push(['down',1])
-    }
-    if (j > 0) {
-        directionTable.push(['left',1])
-    }
-    if (j < WIDTH - 1) {
-        directionTable.push(['right',1])
-    }
-    const idx = directionTable.findIndex(x => x[0] === direction )
-    if (idx !== -1) {
-        if (it + 1 > 3) {
-            directionTable = directionTable.filter(x => x[0] !== direction && x[0] !== objOppositeDirection[direction])
-        } else {
-            directionTable[idx][1] = it + 1
-        }
-    }
-    
-    return  directionTable
-}
-
-const createGraph = (getPossibleDirection) => {
-    const dijkstraObj = {}
-    const GRAPH = {}
-    const nodeToExplore = [[0,0,'',0]]
-    while (nodeToExplore.length > 0) {
-        const curNode = nodeToExplore.shift()
-        const curKey = curNode.join(',')
-        if (GRAPH[curKey] === undefined) {
-            const directions = getPossibleDirection(...curNode)
-            const currentEdges = []
-            for (const [newDirection,newIt] of directions) {
-                const newI = curNode[0] + objDirectionIdx[newDirection][0]
-                const newJ = curNode[1] + objDirectionIdx[newDirection][1]
-                const key = `${newI},${newJ},${newDirection},${newIt}`
-                if (GRAPH[key] === undefined && (newI !== 0 || newJ !== 0)) {
-                    nodeToExplore.push([newI,newJ,newDirection,newIt])
-                }
-                currentEdges.push({node: key, weight: input[newI][newJ]})
-                GRAPH[curKey] = currentEdges
-                dijkstraObj[curKey] = INFINI
-            }
-        }
-    }
-    dijkstraObj['0,0,,0'] = 0
-    return [GRAPH,dijkstraObj]
-}
-
-const computeDistance = (GRAPH,dijkstraObj) => {
-    let Q = Object.keys(GRAPH)
-    while (Q.length > 0) {
-        const s1 = minSommet(Q,dijkstraObj)
-        Q = Q.filter(x => x !== s1)
-        for (const s2 of GRAPH[s1]) {
-            if (dijkstraObj[s2.node] > dijkstraObj[s1] + s2.weight) {
-                dijkstraObj[s2.node] = dijkstraObj[s1] + s2.weight
-            }
-        }
-    }
-    return Math.min(... Object.entries(dijkstraObj).filter(([key,value]) => key.startsWith(`${HEIGHT -1},${WIDTH -1}`)).map(x => x[1]))
-}
+const comparator  = (a,b) => b[0] - a[0]
 
 // Problème 1
 
-const [GRAPH, dijkstraObj] = createGraph(getPossibleDirection)
-const res = computeDistance(GRAPH,dijkstraObj)
+const computeHeat = () => {
+    const nodeVisits = {}
+    const pq = new PriorityQueue({comparator })
+    
+    pq.push([0,0,0,0,0,0])
+    while (!pq.isEmpty()) {
 
-console.log(`Solution Problème 1 : ${res}`)
+        const [curLen, curI, curJ, dirI, dirJ, curIt ] = pq.pop()
+        
+        if (curI === HEIGHT - 1 && curJ === WIDTH -1) {
+            return curLen
+        }
+
+        const key = `${curI},${curJ},${dirI},${dirJ},${curIt}`
+
+        if (nodeVisits[key] === undefined) {
+            nodeVisits[key] = 1
+            if (curIt < 3 && (dirI !== 0 || dirJ !== 0)) {
+                const newI = curI + dirI
+                const newJ = curJ + dirJ
+                if (newI >= 0 && newI < HEIGHT && newJ >= 0 && newJ < WIDTH) {
+                    pq.push([curLen + input[newI][newJ],newI,newJ,dirI,dirJ,curIt + 1])
+                }
+            }
+            for (const [newDirI, newDirJ] of tableDirection) {
+                if ((newDirI !== dirI || newDirJ !== dirJ) && (newDirI !== -dirI || newDirJ !== -dirJ)) {
+                    const newI = curI + newDirI
+                    const newJ = curJ + newDirJ
+                    if (newI >= 0 && newI < HEIGHT && newJ >= 0 && newJ < WIDTH) {
+                        pq.push([curLen + input[newI][newJ],newI,newJ,newDirI,newDirJ,1])
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+console.log(`Solution Problème 1 : ${computeHeat()}`)
+
+// Problème 2
+
+const computeHeat2 = () => {
+    const nodeVisits = {}
+    const pq = new PriorityQueue({comparator })
+    pq.push([0,0,0,0,0,0])
+    while (!pq.isEmpty()) {
+        const [curLen, curI, curJ, dirI, dirJ, curIt ] = pq.pop()
+        if (curI === HEIGHT - 1 && curJ === WIDTH -1 && curIt >= 4) {
+            return curLen
+        }
+
+        const key = `${curI},${curJ},${dirI},${dirJ},${curIt}`
+
+        if (nodeVisits[key] === undefined) {
+            nodeVisits[key] = 1
+            if (curIt < 10 && (dirI !== 0 || dirJ !== 0)) {
+                const newI = curI + dirI
+                const newJ = curJ + dirJ
+                if (newI >= 0 && newI < HEIGHT && newJ >= 0 && newJ < WIDTH) {
+                    pq.push([curLen + input[newI][newJ],newI,newJ,dirI,dirJ,curIt + 1])
+                }
+            }
+
+            if (curIt >= 4 || (dirI === 0 && dirJ === 0)) {
+                for (const [newDirI, newDirJ] of tableDirection) {
+                    if ((newDirI !== dirI || newDirJ !== dirJ) && (newDirI !== -dirI || newDirJ !== -dirJ)) {
+                        const newI = curI + newDirI
+                        const newJ = curJ + newDirJ
+                        if (newI >= 0 && newI < HEIGHT && newJ >= 0 && newJ < WIDTH) {
+                            pq.push([curLen + input[newI][newJ],newI,newJ,newDirI,newDirJ,1])
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+console.log(`Solution Problème 2 : ${computeHeat2()}`)
+
+
