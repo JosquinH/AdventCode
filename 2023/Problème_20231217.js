@@ -1,5 +1,5 @@
 const fs = require('fs')
-const PriorityQueue = require('priorityqueue/SkewHeap').default
+const PriorityQueue = require('priorityqueue').default
 const filename = "input/input_20231217.txt"
 
 const input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split('').map(y => parseInt(y)))
