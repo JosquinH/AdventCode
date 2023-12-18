@@ -1,113 +1,58 @@
 const fs = require('fs')
-//const filename = "input/test.txt"
 const filename = "input/input_20231218.txt"
+
 const input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => {
     const newX = x.split(' ')
-    return [newX[0],parseInt(newX[1]),newX[2].slice(1,newX[2].length - 1)]
+    return [newX[0],parseInt(newX[1]),newX[2].slice(2,newX[2].length - 1)]
 })
 
-const maxObj = {'U': 0, 'L': 0, 'D': 0, 'R': 0 }
 const directionObj = {'U': [-1,0], 'L': [0,-1], 'D': [1,0], 'R': [0,1]}
 
-const directionsPipe = {'UL' : '7','UR' : 'F','LU' : 'L','LD' : 'F','DL' : 'J','DR' : 'L','RU' : 'J','RD' : '7'}
-const symbolDirection = {'U' : '|', 'L': '-', 'D': '|', 'R': '-'}
+/**
+ * La surface correspond au nombre de point à l'intérieur du polygone + le nombre de point sur son bord
+ * 
+ * D'après le théorème de Pick on a i = A - b/2 + 1 
+ * Où : 
+ *   . A est la surface du polygone
+ *   . b le nombre de point sur son bord
+ *   . i le nombre de point à l'intérieur du polygone
+ * 
+ * Comme la surface cherchée est i + b, on renverra A + b/2 + 1
+ * 
+ * A peut être calculé avec la formule du laçage
+ */
 
-for (line of input) {
-    maxObj[line[0]] += line[1] 
+const getArea = (input) => {
+    let curI = 0
+    let curJ = 0
+    let boundaryPoints = 0
+    const points = [[curI,curJ]]
+    for (const [curDirection,curStep] of input) {
+        boundaryPoints += curStep
+        const [coeffI, coeffJ] = directionObj[curDirection]
+        const newI = curI + coeffI * curStep
+        const newJ = curJ + coeffJ * curStep
+        points.push([newI,newJ])
+        curI = newI
+        curJ = newJ
+    }
+    const polygoneArea = Math.abs(points.map((x,idx,tab) => x[0] * (tab[(idx - 1 + tab.length) % tab.length][1] - tab[(idx + 1) % tab.length][1])).reduce((acc,x) => acc + x,0)) / 2
+    return polygoneArea + boundaryPoints/2 + 1
 }
-
-const groundLine = '.'.repeat(maxObj['L'] + maxObj['R'] + 1) + ','
-const groundTable = groundLine.repeat(maxObj['U'] + maxObj['D'] + 1).split(',').map(x => x.split(''))
-groundTable.pop()
-
 
 // Problème 1
 
-let currentI = maxObj['U']
-let currentJ = maxObj['L']
+console.log(`Solution Problème 1 : ${getArea(input.map(x => [x[0],x[1]]))}`)
 
-let minI = currentI
-let maxI = currentI
-let minJ = currentJ
-let maxJ = currentJ
+// Problème 2
 
-let precDirection = ''
+const tableDirection = ['R','D','L','U']
 
-for (const [direction,step,color] of input) {
-    if (precDirection !== '') {
-        groundTable[currentI][currentJ] = directionsPipe[precDirection + direction]
-    }
-    precDirection = direction
-    const curSymbol = symbolDirection[direction]
+const newInput = input.map((x) => {
+    const number = parseInt(x[2].slice(0,x[2].length - 1),16)
+    const direction =  tableDirection[parseInt(x[2].slice(x[2].length - 1))]
+    return [direction,number]
+})
 
-    const coeffI = directionObj[direction][0]
-    const coeffJ = directionObj[direction][1]
-    
-    if (coeffJ === 0) {
-        for (let i = 1; i <= step; ++i) {
-            groundTable[currentI + i * coeffI][currentJ] = curSymbol
-        }
-        currentI += step*coeffI
-        if (currentI < minI) {
-            minI = currentI
-        } else if (currentI > maxI) {
-            maxI = currentI
-        }
-    } else if (coeffI === 0) {
-        for (let j = 1; j <= step; ++j) {
-            groundTable[currentI][currentJ + j * coeffJ] = curSymbol
-        }
-        currentJ += step*coeffJ
-        if (currentJ < minJ) {
-            minJ = currentJ
-        } else if (currentJ > maxJ) {
-            maxJ = currentJ
-        }
-    }
+console.log(`Solution Problème 2 : ${getArea(newInput)}`)
 
-}
-
-groundTable[maxObj['U']][maxObj['L']] = directionsPipe[input[input.length -1][0] + input[0][0]]
-
-let total = 0
-
-for (let i = minI; i <= maxI; ++i) {
-    for (let j = minJ; j <= maxJ; ++j) {
-        if (groundTable[i][j] !== '.') {
-            total += 1
-        } else {
-            let numberOfWall = 0
-            let precSymbol = undefined
-            for (let jj = j+1; jj <= maxJ; ++jj) {
-                if (groundTable[i][jj] === '|') {
-                    ++ numberOfWall
-                } else if (groundTable[i][jj] !== '.' && groundTable[i][jj] !== '-') {
-                    const symbol = groundTable[i][jj]
-                    if (precSymbol === undefined) {
-                        precSymbol = symbol
-                    } else {
-                        const key = precSymbol + symbol
-                        if (key === 'FJ' || key === 'L7') {
-                            numberOfWall += 1
-                        } else {
-                            numberOfWall += 2
-                        }
-                        precSymbol = undefined
-                    }
-                }
-            }
-            if (numberOfWall % 2 === 1) {
-                ++total
-            }
-        }
-    }
-}
-
-/**
- * for (const line of groundTable) {
-    console.log(line.join(''))
-}
- */
-
-
-console.log(`Solution Problème 1 : ${total}`)
