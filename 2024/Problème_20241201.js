@@ -1,8 +1,9 @@
 const fs = require('fs');
 const filename = "input/input_20241201.txt"
-const input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split(' ').filter(y => y !=='').map(y => parseInt(y)))
+const input = fs.readFileSync(filename, 'utf8').split('\r\n')
 
-const [inputLeft,inputRight] = input.reduce((acc,x) => [[...acc[0],x[0]],[...acc[1],x[1]]], [[],[]] )
+const [inputLeft,inputRight] = input.map(x => x.split(' ').filter(y => y !=='').map(y => parseInt(y)))
+    .reduce((acc,x) => [[...acc[0],x[0]],[...acc[1],x[1]]], [[],[]])
 
 // Problème 1
 

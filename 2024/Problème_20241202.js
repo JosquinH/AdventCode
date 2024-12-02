@@ -3,14 +3,19 @@ const filename = "input/input_20241202.txt"
 const input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split(' ').map(y => parseInt(y)))
 
 const lineSafe = (curLine) => {
-    const tableauInc = []
     let safe = true;
-    for (let i = 0; i < curLine.length - 1; ++ i) {
+    let signe = 0;
+    let i = 0
+    while (i < curLine.length - 1 && safe ) {
         const distance = curLine[i+1] - curLine[i]
-        safe = Math.abs(distance) >= 1 && Math.abs(distance) <= 3 && safe
-        tableauInc.push(Math.sign(distance))
+        const currentSigne = Math.sign(distance)
+        if (signe === 0) {
+            signe = currentSigne
+        }
+        safe = Math.abs(distance) >= 1 && Math.abs(distance) <= 3 && signe === currentSigne && safe
+        ++i
     }
-    return safe && tableauInc.filter(x => x === tableauInc[0]).length === curLine.length - 1
+    return safe
 }
 
 // Problème 1
@@ -32,11 +37,10 @@ numberOfSafe = 0
 for (const line of input) {
     curSafe = lineSafe(line)
     let i = 0
-    while (!curSafe && i <= line.length) {
-        curSafe = lineSafe([...line.slice(0,i),...line.slice(i+1)])
+    while (!lineSafe([...line.slice(0,i),...line.slice(i+1)]) && i <= line.length) {
         ++i
     }
-    if (curSafe) {
+    if (i <= line.length) {
         ++numberOfSafe
     }
 }
