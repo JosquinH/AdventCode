@@ -23,6 +23,7 @@ for (let i = 0; i < HEIGHT; ++i) {
     const deplacementBasOk = (i + 3) < HEIGHT
 
     for (let j = 0; j < input.length; ++ j) {
+
         if (input[i].charAt(j) === 'X') {
 
             const deplacementGaucheOk = (j - 3) >= 0
@@ -87,8 +88,11 @@ console.log(`Solution Problème 1 : ${res1}`)
 let res2 = 0;
 
 for (let i = 1; i < HEIGHT - 1; ++i) {
+
     for (let j = 1; j < WIDTH -1; ++j) {
+
         if (input[i].charAt(j) === 'A') {
+            
             const lettreHautGauche = input[i-1].charAt(j-1)
             const lettreHautDroite = input[i-1].charAt(j+1)
             const lettreBasDroite = input[i+1].charAt(j+1)
