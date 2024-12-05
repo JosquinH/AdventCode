@@ -28,9 +28,6 @@ const testOrder = (l) => {
     for (let i = 1; i < size ; ++i) {
         orderOk = orderOk && G[l[i-1]].findIndex(x => x === l[i]) !== -1
     }
-    if (orderOk) {
-        console.log(l)
-    }
     return orderOk
 }
 
@@ -50,14 +47,39 @@ console.log(`Solution Problème 1 : ${res1}`)
 
 let res2 = 0
 
-for (const curPageToProduce of PAGE_TO_PRODUCE) {
+for (let curPageToProduce of PAGE_TO_PRODUCE) {
+
     if (!testOrder(curPageToProduce)) {
-        let i = 0
-        while (!testOrder([...curPageToProduce.slice(0,i),...curPageToProduce.slice(i+1)]) && i <= curPageToProduce.length) {
-            ++i
+
+        // Construction graphe local
+
+        const currentG = {}
+        for (const node of curPageToProduce) {
+            currentG[node] = G[node].filter(x => curPageToProduce.findIndex(y => y === x) !== -1);
         }
-        console.log(parseInt(curPageToProduce[i]))
-        res2 += parseInt(curPageToProduce[i])
+
+        // Trie Topologique
+
+        const newOrder = []
+
+        while(curPageToProduce.length !== 0) {
+            let i = 0
+            let trouve = false
+            while (!trouve && i < curPageToProduce.length) {
+                const curNode = curPageToProduce[i]
+                trouve = currentG[curNode].length === 0
+                if (trouve) {
+                    newOrder.unshift(curNode)
+                    curPageToProduce = curPageToProduce.filter(x => x !== curNode)
+                    for (node of curPageToProduce) {
+                        currentG[node] = currentG[node].filter(x => x !== curNode)
+                    }
+                }
+                ++i
+            }
+        }
+        
+        res2 += (parseInt(newOrder[Math.floor(newOrder.length / 2)]))
     }
 }
 
