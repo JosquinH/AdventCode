@@ -59,7 +59,8 @@ for (const case_obstacle_idx of CASE_PASSEE_IDX) {
 
     input[obstacle_i][obstacle_j] = '#'
 
-    let [ii,jj] = startPosition
+    ii = startPosition[0]
+    jj = startPosition[1]
 
     input_turn_idx = 0
 
@@ -69,31 +70,35 @@ for (const case_obstacle_idx of CASE_PASSEE_IDX) {
 
     while (ii >= 0 && ii < HEIGHT && jj >= 0 && jj < WIDTH && !loop) {
 
-        const key = `${ii},${jj},${input_turn_idx}`
+        const key = `${ii};${jj};${input_turn_idx}`
 
-        if (casePasseeSens[key] === undefined) {
+        loop = casePasseeSens[key] !== undefined
+
+        if (!loop) {
+
             casePasseeSens[key] = true
+
             const proj_ii = ii + INPUT_TURN[input_turn_idx][0]
             const proj_jj = jj + INPUT_TURN[input_turn_idx][1]
         
             if (proj_ii >= 0 && proj_ii < HEIGHT && proj_jj >= 0 && proj_jj < WIDTH) {
+
                 if (input[proj_ii][proj_jj] === '#') {
                     input_turn_idx = (input_turn_idx + 1) % 4
                 }
+
             }
         
             ii = ii + INPUT_TURN[input_turn_idx][0]
             jj = jj + INPUT_TURN[input_turn_idx][1]
-            
-        } else {
-            loop = true
+
         }
     }
 
+    res2 += loop ? 1 : 0
+
     input[obstacle_i][obstacle_j] = '.'
 
-    
-    res2 += loop ? 1 : 0 
 }
 
 console.log(`Solution Problème 2 : ${res2}`)
