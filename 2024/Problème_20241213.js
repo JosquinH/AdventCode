@@ -52,8 +52,8 @@ const resolveDiophanteEquation = (a,b,c) => {
     if (c % d !== 0) {
         return null
     } else {
-        let a1 = a/d
-        let b1 = b/d
+        const a1 = a/d
+        const b1 = b/d
         const c1 = c/d
 
         const [pgcd,x1,y1] = algoEuclideEtendue(a1,b1)
