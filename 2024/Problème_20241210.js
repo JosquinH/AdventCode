@@ -3,6 +3,9 @@ const fs = require('fs');
 const filename = "input/input_20241210.txt"
 const input = fs.readFileSync(filename, 'utf8').split('\r\n').map(x => x.split(''))
 
+const HEIGHT = input.length
+const WIDTH = input[0].length
+
 const startNodeList = []
 const endNodeList = []
 
@@ -10,8 +13,8 @@ const G = {}
 
 // Construction Graphe
 
-for (let i = 0; i < input.length; ++i) {
-    for (let j = 0; j < input[0].length; ++j) {
+for (let i = 0; i < HEIGHT; ++i) {
+    for (let j = 0; j < WIDTH; ++j) {
         if (input[i][j] !== '.') {
             const curNodeVal = parseInt(input[i][j])
             const nodeId = `N${i};${j}`
@@ -22,7 +25,7 @@ for (let i = 0; i < input.length; ++i) {
             }
             const neighborList = []
             for (const [ii,jj] of [[-1,0],[1,0],[0,-1],[0,1]]) {
-                if (i + ii >= 0 && i + ii < input.length && j + jj >= 0 && j + jj < input[0].length) {
+                if (i + ii >= 0 && i + ii < HEIGHT && j + jj >= 0 && j + jj < WIDTH) {
                     if (input[i+ii][j + jj] !== '.' && parseInt(input[i+ii][j + jj]) - curNodeVal === 1) {
                         neighborList.push(`N${i + ii};${j + jj}`)
                     }
@@ -37,6 +40,8 @@ for (let i = 0; i < input.length; ++i) {
 
 const  noeudDeFinAtteintNb = (nodeStart) => {
 
+    // Parcours en largeur
+    
     const noeudDejaParcouru = {}
     const FIL = [nodeStart]
 
